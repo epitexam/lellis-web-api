@@ -3,7 +3,8 @@
   "version": "1.0.50",
   "scripts": {
     "test": "bun test",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build --compile --minify-whitespace --minify-syntax --target bun-linux-x64 --outfile server src/index.ts"
   },
   "dependencies": {
     "elysia": "latest"
