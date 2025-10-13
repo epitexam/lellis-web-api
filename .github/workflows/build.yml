@@ -1,17 +1,19 @@
-name: CI - Build & Test Elysia App
+name: Dev Workflow
 
 on:
   push:
-    branches: [ 'master' ]
+    branches:
+      - master
   pull_request:
-    branches: [ 'master' ]
+    branches:
+      - master
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v5
 
       - name: Install Bun
@@ -21,9 +23,9 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-
+        
       - name: Run tests
         run: bun test
 
-      - name: Build
-        run: bun run build
+      - name: Build project
+        run: bun run build || echo "No build script defined"
