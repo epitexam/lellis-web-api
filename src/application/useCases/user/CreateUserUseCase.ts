@@ -3,6 +3,7 @@ import { User } from "../../../domain/user/entities/User"
 import { UserErrorType } from "../../../domain/user/enums/UserErrorType"
 import { IPasswordHasher } from "../../providers/IPasswordHasher"
 import { IUsersRepository } from "../../repositories/IUsersRepository"
+import { ICreateUserUseCase } from "./ICreateUserUseCase"
 
 /**
  * Use case responsible for creating a new user.
@@ -13,7 +14,7 @@ import { IUsersRepository } from "../../repositories/IUsersRepository"
  *
  * @class
  */
-export class CreateUserUseCase {
+export class CreateUserUseCase implements ICreateUserUseCase {
     /**
      * Initializes a new instance of the CreateUserUseCase class.
      *
