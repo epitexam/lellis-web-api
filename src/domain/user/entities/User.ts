@@ -1,9 +1,7 @@
-// entities/User.ts
-
+import { PasswordErrorType } from "../enums/PasswordErrorType";
+import { ICreateUserDTO } from "../dtos/ICreateUserDTO";
 import { Email } from "../valueObjects/Email";
 import { Password } from "../valueObjects/Password";
-import { UserErrorType } from "../enums/UserErrorType";
-import { PasswordErrorType } from "../enums/PasswordErrorType";
 
 /**
  * Custom error for user-related issues.
@@ -28,10 +26,9 @@ export class InvalidPasswordHashError extends UserError {
  * Properties required to create a User entity.
  */
 export interface UserProps {
-    id: string;
     uuid: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     email: Email;
     password: Password;
     createdAt: Date;
@@ -42,20 +39,18 @@ export interface UserProps {
  * User entity representing a user in the system.
  */
 export class User {
-    private _id: string;
     private _uuid: string;
-    private _firstName: string;
-    private _lastName: string;
+    private _first_name: string;
+    private _last_name: string;
     private _email: Email;
     private _password: Password;
     private _createdAt: Date;
     private _updatedAt: Date;
 
     private constructor(props: UserProps) {
-        this._id = props.id;
         this._uuid = props.uuid;
-        this._firstName = props.firstName;
-        this._lastName = props.lastName;
+        this._first_name = props.first_name;
+        this._last_name = props.last_name;
         this._email = props.email;
         this._password = props.password;
         this._createdAt = props.createdAt;
@@ -75,13 +70,6 @@ export class User {
     }
 
     /**
-     * Returns the user's unique ID.
-     */
-    get id(): string {
-        return this._id;
-    }
-
-    /**
      * Returns the user's UUID.
      */
     get uuid(): string {
@@ -91,22 +79,22 @@ export class User {
     /**
      * Returns the user's first name.
      */
-    get firstName(): string {
-        return this._firstName;
+    get first_name(): string {
+        return this._first_name;
     }
 
     /**
      * Returns the user's last name.
      */
-    get lastName(): string {
-        return this._lastName;
+    get last_name(): string {
+        return this._last_name;
     }
 
     /**
      * Returns the user's full name.
      */
     get fullName(): string {
-        return `${this._firstName} ${this._lastName}`;
+        return `${this._first_name} ${this._last_name}`;
     }
 
     /**
@@ -119,8 +107,8 @@ export class User {
     /**
      * Returns the user's password value object.
      */
-    get password(): Password {
-        return this._password;
+    get password(): string {
+        return this._password.value;
     }
 
     /**
@@ -151,22 +139,22 @@ export class User {
      * @param newPassword - The new password value object.
      * @throws {InvalidPasswordHashError} If the new password is too short.
      */
-    updatePassword(newPassword: Password): void {
-        if (newPassword.value.length < 10) {
+    updatePassword(newPassword: string): void {
+        if (newPassword.length < 10) {
             throw new InvalidPasswordHashError();
         }
-        this._password = newPassword;
+        this._password.value = newPassword;
         this._updatedAt = new Date();
     }
 
     /**
      * Updates the user's first and last name.
-     * @param firstName - The new first name.
-     * @param lastName - The new last name.
+     * @param first_name - The new first name.
+     * @param last_name - The new last name.
      */
-    updateName(firstName: string, lastName: string): void {
-        this._firstName = firstName;
-        this._lastName = lastName;
+    updateName(first_name: string, last_name: string): void {
+        this._first_name = first_name;
+        this._last_name = last_name;
         this._updatedAt = new Date();
     }
 
@@ -177,27 +165,27 @@ export class User {
     toJSON() {
         return {
             uuid: this._uuid,
-            firstName: this._firstName,
-            lastName: this._lastName,
+            first_name: this._first_name,
+            last_name: this._last_name,
             fullName: this.fullName,
-            email: this._email.value,
+            email: this._email,
             createdAt: this._createdAt,
             updatedAt: this._updatedAt,
         };
     }
 
-    /**
-     * Creates a new User instance with validation and default timestamps.
-     * @param props - User properties excluding id, createdAt, and updatedAt.
-     * @returns A new User instance.
-     */
-    static create(props: Omit<UserProps, 'id' | 'createdAt' | 'updatedAt'> & { createdAt?: Date }): User {
-        const now = props.createdAt || new Date();
+    static create({ first_name, last_name, email, password }: ICreateUserDTO) {
+        const newEmail = new Email({ value: email });
+        const newPassword = new Password({ value: password })
+
         return new User({
-            ...props,
-            id: "auto-generated-id",
-            createdAt: now,
-            updatedAt: now,
-        });
+            uuid: Bun.randomUUIDv7(),
+            first_name,
+            last_name,
+            password: newPassword,
+            email: newEmail,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
     }
 }
