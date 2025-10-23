@@ -4,9 +4,15 @@ import { Email } from "../valueObjects/Email";
 import { Password } from "../valueObjects/Password";
 
 /**
- * Custom error for user-related issues.
+ * Base class for domain-specific user-related errors.
+ * 
+ * @extends Error
  */
 export class UserError extends Error {
+    /**
+     * Creates a new {@link UserError}.
+     * @param {string} message - The error message.
+     */
     constructor(message: string) {
         super(message);
         this.name = "UserError";
@@ -14,16 +20,21 @@ export class UserError extends Error {
 }
 
 /**
- * Error thrown when password hash length is invalid.
+ * Error thrown when a password hash does not meet minimum length requirements.
+ * 
+ * @extends UserError
  */
 export class InvalidPasswordHashError extends UserError {
+    /**
+     * Creates a new {@link InvalidPasswordHashError}.
+     */
     constructor() {
         super(PasswordErrorType.InvalidPasswordHash);
     }
 }
 
 /**
- * Properties required to create a User entity.
+ * Represents the required properties to instantiate a {@link User} entity.
  */
 export interface UserProps {
     uuid: string;
@@ -36,7 +47,10 @@ export interface UserProps {
 }
 
 /**
- * User entity representing a user in the system.
+ * The {@link User} entity represents a system user within the domain layer.
+ *
+ * This class encapsulates user-related behavior, including validation logic,
+ * and ensures all invariants are respected (e.g., strong password, valid email).
  */
 export class User {
     private _uuid: string;
@@ -47,6 +61,11 @@ export class User {
     private _createdAt: Date;
     private _updatedAt: Date;
 
+    /**
+     * Private constructor to enforce the use of factory methods.
+     *
+     * @param {UserProps} props - User properties.
+     */
     private constructor(props: UserProps) {
         this._uuid = props.uuid;
         this._first_name = props.first_name;
@@ -60,8 +79,10 @@ export class User {
     }
 
     /**
-     * Validates the user properties.
-     * @throws {InvalidPasswordHashError} If password hash is too short.
+     * Validates the integrity of the user entity.
+     *
+     * @private
+     * @throws {InvalidPasswordHashError} If the password hash is too short.
      */
     private validate(): void {
         if (this._password.value.length < 10) {
@@ -69,65 +90,50 @@ export class User {
         }
     }
 
-    /**
-     * Returns the user's UUID.
-     */
+    /** @returns {string} The user’s UUID. */
     get uuid(): string {
         return this._uuid;
     }
 
-    /**
-     * Returns the user's first name.
-     */
+    /** @returns {string} The user’s first name. */
     get first_name(): string {
         return this._first_name;
     }
 
-    /**
-     * Returns the user's last name.
-     */
+    /** @returns {string} The user’s last name. */
     get last_name(): string {
         return this._last_name;
     }
 
-    /**
-     * Returns the user's full name.
-     */
+    /** @returns {string} The user’s full name (first + last). */
     get fullName(): string {
         return `${this._first_name} ${this._last_name}`;
     }
 
-    /**
-     * Returns the user's email value object.
-     */
+    /** @returns {Email} The user’s email value object. */
     get email(): Email {
         return this._email;
     }
 
-    /**
-     * Returns the user's password value object.
-     */
+    /** @returns {string} The user’s password hash (value only). */
     get password(): string {
         return this._password.value;
     }
 
-    /**
-     * Returns the user's creation date.
-     */
+    /** @returns {Date} The date when the user was created. */
     get createdAt(): Date {
         return this._createdAt;
     }
 
-    /**
-     * Returns the user's last update date.
-     */
+    /** @returns {Date} The date when the user was last updated. */
     get updatedAt(): Date {
         return this._updatedAt;
     }
 
     /**
-     * Updates the user's email.
-     * @param newEmail - The new email value object.
+     * Updates the user’s email address.
+     *
+     * @param {Email} newEmail - The new email value object.
      */
     updateEmail(newEmail: Email): void {
         this._email = newEmail;
@@ -135,8 +141,9 @@ export class User {
     }
 
     /**
-     * Updates the user's password.
-     * @param newPassword - The new password value object.
+     * Updates the user’s password.
+     *
+     * @param {string} newPassword - The new password value.
      * @throws {InvalidPasswordHashError} If the new password is too short.
      */
     updatePassword(newPassword: string): void {
@@ -148,9 +155,10 @@ export class User {
     }
 
     /**
-     * Updates the user's first and last name.
-     * @param first_name - The new first name.
-     * @param last_name - The new last name.
+     * Updates the user’s name.
+     *
+     * @param {string} first_name - The new first name.
+     * @param {string} last_name - The new last name.
      */
     updateName(first_name: string, last_name: string): void {
         this._first_name = first_name;
@@ -159,8 +167,9 @@ export class User {
     }
 
     /**
-     * Returns a JSON representation of the user for serialization.
-     * Note: password is not included in the output.
+     * Converts the {@link User} entity into a plain JavaScript object for serialization.
+     *
+     * @returns {object} A JSON-safe representation of the user (password excluded).
      */
     toJSON() {
         return {
@@ -174,9 +183,24 @@ export class User {
         };
     }
 
-    static create({ first_name, last_name, email, password }: ICreateUserDTO) {
+    /**
+     * Factory method for creating a new {@link User} instance from a DTO.
+     *
+     * @static
+     * @param {ICreateUserDTO} data - The user data transfer object.
+     * @returns {User} The newly created user entity.
+     *
+     * @example
+     * const user = User.create({
+     *   email: "john.doe@example.com",
+     *   first_name: "John",
+     *   last_name: "Doe",
+     *   password: "hashed_password_here"
+     * });
+     */
+    static create({ first_name, last_name, email, password }: ICreateUserDTO): User {
         const newEmail = new Email({ value: email });
-        const newPassword = new Password({ value: password })
+        const newPassword = new Password({ value: password });
 
         return new User({
             uuid: Bun.randomUUIDv7(),
@@ -186,6 +210,6 @@ export class User {
             email: newEmail,
             createdAt: new Date(),
             updatedAt: new Date(),
-        })
+        });
     }
 }
