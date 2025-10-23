@@ -7,27 +7,36 @@ Following the article:
 
 ## ✅ Current Structure Overview
 
+---
+```plaintext
 src/
 ├── application/
 │   ├── providers/
 │   ├── repositories/
-│   ├── useCases/
-│
+│   └── useCases/
+│       ├── post/
+│       └── user/
 ├── domain/
-│   ├── post/
-│   ├── user/
-│
+│   ├── dtos/
+│   ├── entities/
+│   ├── enums/
+│   └── valueObjects/
 ├── infrastructure/
-│   ├── post/
-│   ├── user/
-│
+│   ├── database/
+│   ├── providers/
+│   ├── repositories/
+│   ├── services/
+│   └── utils/
+│       ├── post/
+│       └── user/
 ├── presentation/
 │   ├── adapters/
 │   ├── dtos/
-│   ├── http/
-│   ├── post/
-│   ├── user/
-
+│   └── http/
+│       ├── post/
+│       └── user/
+└── index.ts
+```
 ---
 
 ## ✅ Completed
