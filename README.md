@@ -60,7 +60,7 @@ src/
   - [x] `PrismaUserRepository.ts`
 - [x] Added token and password providers
   - [x] `TokenProvider.ts`
-  - [x] `HashProviders.ts`
+  - [x] `PasswordHasher.ts`
 - [x] Added `CreateUserComposer.ts` and `validateToken.ts`
 
 ### 🖥️ Presentation Layer
