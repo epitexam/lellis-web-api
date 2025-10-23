@@ -1,6 +1,6 @@
 import { IPasswordHasher } from "../../../application/providers/IPasswordHasher"
 
-export class HashProvider implements IPasswordHasher {
+export class PasswordHasher implements IPasswordHasher {
     async hashPassword(password: string) {
         return Bun.password.hash(password)
     }
