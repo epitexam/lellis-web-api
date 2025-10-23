@@ -1,9 +1,11 @@
-export class HashProvider {
-    static async hash(password: string) {
+import { IPasswordHasher } from "../../../application/providers/IPasswordHasher"
+
+export class HashProvider implements IPasswordHasher {
+    async hashPassword(password: string) {
         return Bun.password.hash(password)
     }
 
-    static async compare(password: string, hashedPassword: string) {
+    async comparePassword(password: string, hashedPassword: string) {
         return Bun.password.verify(password, hashedPassword)
     }
 }
