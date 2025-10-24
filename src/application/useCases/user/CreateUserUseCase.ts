@@ -1,9 +1,10 @@
 import { ICreateUserDTO } from "../../../domain/user/dtos/ICreateUserDTO"
+import { IUserOutputRequestDTO } from "../../../domain/user/dtos/IUserOutputRequestDTO"
 import { User } from "../../../domain/user/entities/User"
 import { UserErrorType } from "../../../domain/user/enums/UserErrorType"
 import { IPasswordHasher } from "../../providers/IPasswordHasher"
 import { IUsersRepository } from "../../repositories/IUsersRepository"
-import { ICreateUserUseCase } from "./ICreateUserUseCase"
+import { ICreateUserUseCase, IUseCaseResult } from "./ICreateUserUseCase"
 
 /**
  * Use case responsible for creating a new user.
@@ -48,7 +49,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
      *   console.log("User created:", result.data);
      * } else {
      *   console.error("Error:", result.data.error);
-     * }
+     * }²
      */
     async execute({ email, last_name, first_name, password }: ICreateUserDTO) {
         try {
@@ -67,7 +68,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
 
             if (userAlreadyExists) {
                 return {
-                    data: { error: UserErrorType.UserAlreadyExists },
+                    error: UserErrorType.UserAlreadyExists,
                     success: false,
                 }
             }
@@ -84,10 +85,12 @@ export class CreateUserUseCase implements ICreateUserUseCase {
             })
 
             // Return the created user
-            return { data: user, success: true }
-        } catch (error: any) {
+            return {
+                data: user, success: true
+            }
+        } catch (err: any) {
             // Catch and return unexpected errors
-            return { data: { error: error.message }, success: false }
+            return { error: err.message, success: false }
         }
     }
 }
