@@ -53,44 +53,43 @@ export class CreateUserUseCase implements ICreateUserUseCase {
      */
     async execute({ email, last_name, first_name, password }: ICreateUserDTO) {
         try {
-            // Create a new user domain entity
-            const userEntity = User.create({
-                email,
-                last_name,
-                first_name,
-                password,
-            })
-
-            // Check if a user with the same email already exists
-            const userAlreadyExists = await this.userRepository.findByEmail(
-                userEntity.email.value
-            )
-
+            const userAlreadyExists = await this.userRepository.findByEmail(email)
             if (userAlreadyExists) {
-                return {
-                    error: UserErrorType.UserAlreadyExists,
-                    success: false,
-                }
+                return { success: false, error: UserErrorType.EmailAlreadyUsed }
             }
 
-            // Hash the password securely before saving
             const passwordHashed = await this.passwordHasher.hashPassword(password)
+            if (!passwordHashed) {
+                return { success: false, error: UserErrorType.PasswordHashingFailed }
+            }
 
-            // Persist the new user
             const user = await this.userRepository.create({
-                email: userEntity.email.value,
-                first_name: userEntity.first_name,
-                last_name: userEntity.last_name,
+                email,
+                first_name,
+                last_name,
                 password: passwordHashed,
             })
 
-            // Return the created user
-            return {
-                data: user, success: true
-            }
+            return { success: true, data: user }
+
         } catch (err: any) {
-            // Catch and return unexpected errors
-            return { error: err.message, success: false }
+
+            if (
+                // Prisma unique constraint
+                err.code === 'P2002' ||
+                // PostgreSQL
+                err.code === '23505' ||
+                // MySQL
+                err.code?.includes('ER_DUP_ENTRY') ||
+                // SQLite
+                err.code?.includes('SQLITE_CONSTRAINT')
+            ) {
+                return { success: false, error: UserErrorType.DatabaseError }
+            }
+
+
+            return { success: false, error: UserErrorType.UnexpectedError }
         }
+
     }
 }
