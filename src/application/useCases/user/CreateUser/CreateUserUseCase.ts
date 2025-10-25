@@ -1,9 +1,9 @@
-import { ICreateUserDTO } from "../../../domain/user/dtos/ICreateUserDTO"
-import { IUserOutputRequestDTO } from "../../../domain/user/dtos/IUserOutputRequestDTO"
-import { User } from "../../../domain/user/entities/User"
-import { UserErrorType } from "../../../domain/user/enums/UserErrorType"
-import { IPasswordHasher } from "../../providers/IPasswordHasher"
-import { IUsersRepository } from "../../repositories/IUsersRepository"
+import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO"
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO"
+import { User } from "../../../../domain/user/entities/User"
+import { UserErrorType } from "../../../../domain/user/enums/UserErrorType"
+import { IPasswordHasher } from "../../../providers/IPasswordHasher"
+import { IUsersRepository } from "../../../repositories/IUsersRepository"
 import { ICreateUserUseCase, IUseCaseResult } from "./ICreateUserUseCase"
 
 /**

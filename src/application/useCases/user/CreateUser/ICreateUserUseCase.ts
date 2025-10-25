@@ -1,5 +1,5 @@
-import { ICreateUserDTO } from "../../../domain/user/dtos/ICreateUserDTO";
-import { IUserOutputRequestDTO } from "../../../domain/user/dtos/IUserOutputRequestDTO";
+import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO";
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 
 /**
  * Represents the generic structure of a use case result.
