@@ -1,23 +1,27 @@
-import { TokenProvider } from "../../../infrastructure/user/providers/TokenProvider";
+import type { Context } from "elysia";
 
-const tokenProvider = new TokenProvider(Bun.env.JWT_SECRET!);
+export const authMiddleware = async (ctx: Context) => {
+    const { request, set } = ctx;
 
-export const authMiddleware = async ({ request, set }: any) => {
+    const jwt = (ctx as any).jwt;
+
     const authHeader = request.headers.get("authorization");
-
     if (!authHeader) {
         set.status = 401;
-        return { error: "Missing Authorization header" };
+        return { message: "Missing Authorization header" };
     }
 
-    const token = authHeader.replace("Bearer ", "");
-    const payload = await tokenProvider.verifyToken(token);
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+        set.status = 401;
+        return { message: "Missing token" };
+    }
 
+    const payload = await jwt.verify(token);
     if (!payload) {
         set.status = 401;
-        return { error: "Invalid or expired token" };
+        return { message: "Invalid or expired token" };
     }
 
-    // on peut stocker le user dans le contexte (Elysia autorise le set local)
     return { user: payload };
 };
