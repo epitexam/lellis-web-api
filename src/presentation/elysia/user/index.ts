@@ -1,8 +1,8 @@
-import { t, Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { CreateUserComposer } from "../../../infrastructure/user/services/CreateUserComposer";
 import { authMiddleware } from "../../http/middleware/authMiddleware";
+import { TokenProvider } from "../../../infrastructure/user/providers/TokenProvider";
 
-// Tu peux même typer/valider ton body ici
 const createUserBody = t.Object({
     last_name: t.String(),
     first_name: t.String(),
@@ -10,18 +10,42 @@ const createUserBody = t.Object({
     password: t.String(),
 });
 
-export const registerUserRoutes = (app: Elysia) => {
-    const userGroup = app.group("/users", (group) => {
-        group.post("/", async ({ body }) => {
-            const controller = CreateUserComposer();
-            const { last_name, first_name, email, password } = body;
-            return controller.handle({ last_name, first_name, email, password });
-        }, {
-            body: createUserBody,
-        });
+const tokenProvider = new TokenProvider(process.env.JWT_SECRET || "super_secret_key");
 
-        return group;
-    });
+export const registerUserRoutes = (app: Elysia) =>
+    app.group("/users", (group) =>
+        group
+            .post(
+                "/",
+                async ({ body }) => {
+                    const controller = CreateUserComposer();
+                    const { last_name, first_name, email, password } = body;
 
-    return userGroup;
-};
+                    const newUser = await controller.handle({
+                        last_name,
+                        first_name,
+                        email,
+                        password,
+                    });
+
+                    const token = await tokenProvider.generateToken({
+                        uuid: newUser.uuid
+                    });
+
+                    return {
+                        message: "User successfully created",
+                        token,
+                    };
+                },
+                { body: createUserBody }
+            )
+            .get(
+                "/me",
+                // @ts-ignore (cant solve this now)
+                async ({ user }) => {
+                    return { user: { uuid: user.uuid, email: user.email } };
+                },
+                { beforeHandle: [authMiddleware] }
+            )
+
+    );
