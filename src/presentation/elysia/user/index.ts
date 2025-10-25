@@ -18,15 +18,6 @@ export const registerUserRoutes = (app: Elysia) => {
             return controller.handle({ last_name, first_name, email, password });
         }, {
             body: createUserBody,
-            beforeHandle: [authMiddleware]
-        });
-
-        group.get("/", async () => ({ message: "bonjour" }), {
-            beforeHandle: [authMiddleware]
-        });
-
-        group.get("/test", async () => ({ message: "test" }), {
-
         });
 
         return group;
