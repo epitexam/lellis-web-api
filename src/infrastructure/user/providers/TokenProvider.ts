@@ -18,7 +18,7 @@ export class TokenProvider implements ITokenProvider {
 
     async verifyToken(token: string): Promise<Record<string, any> | null> {
         try {
-            const payload = await this.jwtInstance.verify(token);
+            const payload = await this.jwtInstance.verify()
             return payload as Record<string, any>;
         } catch {
             return null;
