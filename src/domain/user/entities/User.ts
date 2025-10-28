@@ -1,37 +1,13 @@
-import { PasswordErrorType } from "../enums/PasswordErrorType";
 import { ICreateUserDTO } from "../dtos/ICreateUserDTO";
 import { Email } from "../valueObjects/Email";
 import { Password } from "../valueObjects/Password";
+import { UserError, UserErrorType } from "../enums/UserErrorType";
 
 /**
- * Base class for domain-specific user-related errors.
- * 
- * @extends Error
+ * @file User.ts
+ * @description Defines the User entity and its associated domain logic.
+ * Includes strong validation, encapsulation, and domain-specific invariants.
  */
-export class UserError extends Error {
-    /**
-     * Creates a new {@link UserError}.
-     * @param {string} message - The error message.
-     */
-    constructor(message: string) {
-        super(message);
-        this.name = "UserError";
-    }
-}
-
-/**
- * Error thrown when a password hash does not meet minimum length requirements.
- * 
- * @extends UserError
- */
-export class InvalidPasswordHashError extends UserError {
-    /**
-     * Creates a new {@link InvalidPasswordHashError}.
-     */
-    constructor() {
-        super(PasswordErrorType.InvalidPasswordHash);
-    }
-}
 
 /**
  * Represents the required properties to instantiate a {@link User} entity.
@@ -62,9 +38,9 @@ export class User {
     private _updatedAt: Date;
 
     /**
-     * Private constructor to enforce the use of factory methods.
+     * Private constructor to enforce controlled instantiation via factory methods.
      *
-     * @param {UserProps} props - User properties.
+     * @param {UserProps} props - The user's core properties.
      */
     private constructor(props: UserProps) {
         this._uuid = props.uuid;
@@ -79,43 +55,43 @@ export class User {
     }
 
     /**
-     * Validates the integrity of the user entity.
+     * Validates the integrity and invariants of the {@link User} entity.
      *
      * @private
-     * @throws {InvalidPasswordHashError} If the password hash is too short.
+     * @throws {UserError} If any domain constraint is violated.
      */
     private validate(): void {
         if (this._password.value.length < 10) {
-            throw new InvalidPasswordHashError();
+            throw new UserError(UserErrorType.INVALID_PASSWORD_HASH);
         }
     }
 
-    /** @returns {string} The user’s UUID. */
+    /** @returns {string} The user's unique identifier (UUID). */
     get uuid(): string {
         return this._uuid;
     }
 
-    /** @returns {string} The user’s first name. */
+    /** @returns {string} The user's first name. */
     get first_name(): string {
         return this._first_name;
     }
 
-    /** @returns {string} The user’s last name. */
+    /** @returns {string} The user's last name. */
     get last_name(): string {
         return this._last_name;
     }
 
-    /** @returns {string} The user’s full name (first + last). */
+    /** @returns {string} The user's full name (first + last). */
     get fullName(): string {
         return `${this._first_name} ${this._last_name}`;
     }
 
-    /** @returns {Email} The user’s email value object. */
+    /** @returns {Email} The user's email address (value object). */
     get email(): Email {
         return this._email;
     }
 
-    /** @returns {string} The user’s password hash (value only). */
+    /** @returns {string} The user's password hash (value only). */
     get password(): string {
         return this._password.value;
     }
@@ -131,7 +107,7 @@ export class User {
     }
 
     /**
-     * Updates the user’s email address.
+     * Updates the user's email address.
      *
      * @param {Email} newEmail - The new email value object.
      */
@@ -141,21 +117,21 @@ export class User {
     }
 
     /**
-     * Updates the user’s password.
+     * Updates the user's password.
      *
      * @param {string} newPassword - The new password value.
-     * @throws {InvalidPasswordHashError} If the new password is too short.
+     * @throws {UserError} If the password does not meet domain constraints.
      */
     updatePassword(newPassword: string): void {
         if (newPassword.length < 10) {
-            throw new InvalidPasswordHashError();
+            throw new UserError(UserErrorType.WEAK_PASSWORD);
         }
         this._password.value = newPassword;
         this._updatedAt = new Date();
     }
 
     /**
-     * Updates the user’s name.
+     * Updates the user's name.
      *
      * @param {string} first_name - The new first name.
      * @param {string} last_name - The new last name.
@@ -171,7 +147,7 @@ export class User {
      *
      * @returns {object} A JSON-safe representation of the user (password excluded).
      */
-    toJSON() {
+    toJSON(): object {
         return {
             uuid: this._uuid,
             first_name: this._first_name,
@@ -188,22 +164,24 @@ export class User {
      *
      * @static
      * @param {ICreateUserDTO} data - The user data transfer object.
-     * @returns {User} The newly created user entity.
+     * @returns {User} A new {@link User} entity.
      *
      * @example
+     * ```typescript
      * const user = User.create({
      *   email: "john.doe@example.com",
      *   first_name: "John",
      *   last_name: "Doe",
      *   password: "hashed_password_here"
      * });
+     * ```
      */
     static create({ first_name, last_name, email, password }: ICreateUserDTO): User {
         const newEmail = new Email({ value: email });
         const newPassword = new Password({ value: password });
 
         return new User({
-            uuid: Bun.randomUUIDv7(),
+            uuid: crypto.randomUUID?.() ?? "temp-uuid", // safer cross-runtime UUID generation
             first_name,
             last_name,
             password: newPassword,
