@@ -1,52 +1,59 @@
 /**
  * @file RoleErrorType.ts
- * @description Defines role-specific error types and a custom error class
- * used to standardize error handling within the Role domain.
+ * @description
+ * Defines role-specific error types and the {@link RoleError} class.
+ * Used to standardize and type errors related to role validation and mutation
+ * within the domain layer.
  */
 
 /**
- * Enumerates the different error types that can occur
- * within the Role domain logic.
+ * Enumerates all possible error types related to {@link Role} operations.
  */
 export enum RoleErrorType {
-    /** The role name was left empty. */
-    EMPTY_NAME = "Role name cannot be empty.",
+    /** The role name cannot be empty. */
+    EMPTY_ROLE_NAME = "Role name cannot be empty.",
 
-    /** The specified permission is already associated with this role. */
-    PERMISSION_ALREADY_EXISTS = "Permission already exists in this role.",
+    /** The role name format is invalid (must be uppercase letters and underscores only). */
+    INVALID_ROLE_NAME_FORMAT = "Invalid role name format (must be uppercase letters and underscores).",
 
-    /** The specified permission was not found in this role. */
+    /** The permission already exists in the role and cannot be duplicated. */
+    DUPLICATE_PERMISSION = "Permission already exists in this role.",
+
+    /** The permission was not found in the role. */
     PERMISSION_NOT_FOUND = "Permission not found in this role.",
 
-    /** Attempted to assign an invalid permission object. */
-    INVALID_PERMISSION = "Invalid permission object provided.",
+    /** The role already exists in the network and cannot be duplicated. */
+    DUPLICATE_ROLE = "Role already exists in the network.",
 
-    /** Attempted to duplicate a role that already exists in the network. */
-    DUPLICATE_ROLE = "Role already exists in the network."
+    /** The role was not found in the network. */
+    ROLE_NOT_FOUND = "Role not found in the network.",
+
+    /** The role is currently assigned to one or more users and cannot be removed. */
+    ROLE_IN_USE = "Role is currently assigned to members and cannot be removed.",
 }
 
 /**
- * Custom error class representing an error in the Role domain.
+ * Custom domain error for role-related operations.
  *
  * @example
  * ```typescript
- * throw new RoleError(RoleErrorType.PERMISSION_NOT_FOUND);
+ * throw new RoleError(RoleErrorType.DUPLICATE_PERMISSION);
  * ```
  */
 export class RoleError extends Error {
-    /** Type of role error that occurred. */
+    /** The specific type of role error that occurred. */
     public readonly type: RoleErrorType;
 
     /**
-     * Creates a new instance of `RoleError`.
-     * @param {RoleErrorType} type - The specific type of role error.
+     * Creates a new instance of {@link RoleError}.
+     * @param {RoleErrorType} type - The specific error type.
      */
     constructor(type: RoleErrorType) {
         super(type);
         this.name = "RoleError";
         this.type = type;
 
-        // Required for proper subclassing of built-in Error
+        // Ensure correct prototype chain for `instanceof` checks.
         Object.setPrototypeOf(this, RoleError.prototype);
     }
 }

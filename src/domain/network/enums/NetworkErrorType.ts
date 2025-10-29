@@ -1,32 +1,36 @@
 /**
  * @file NetworkErrorType.ts
- * @description Defines network-specific error types and a custom error class
- * used to standardize error handling within the Network domain.
+ * @description
+ * Defines network-specific error types and the {@link NetworkError} class.
+ * Used to standardize and type errors related to network validation and mutation
+ * within the domain layer.
  */
 
 /**
- * Enumerates the different error types that can occur
- * within the Network domain logic.
+ * Enumerates all possible error types related to {@link Network} operations.
  */
 export enum NetworkErrorType {
-    /** The network name was left empty. */
+    /** The network name cannot be empty. */
     EMPTY_NAME = "Network name cannot be empty.",
 
-    /** The network must have an administrator. */
-    MISSING_ADMIN = "Network must have an admin.",
+    /** The admin user cannot be null or undefined. */
+    MISSING_ADMIN = "Network must have an admin user.",
+
+    /** The user is not a member of this network. */
+    USER_NOT_FOUND = "User is not a member of this network.",
 
     /** The user is already a member of this network. */
-    USER_ALREADY_IN_NETWORK = "User already in network.",
+    USER_ALREADY_IN_NETWORK = "User is already a member of this network.",
 
-    /** The specified user was not found in this network. */
-    USER_NOT_FOUND = "User not found in network.",
+    /** The admin cannot be removed from the network. */
+    CANNOT_REMOVE_ADMIN = "The admin user cannot be removed from the network.",
 
-    /** The admin user cannot be removed from the network. */
-    CANNOT_REMOVE_ADMIN = "Cannot remove the admin."
+    /** The resource was not found in the network. */
+    RESOURCE_NOT_FOUND = "Resource not found in the network.",
 }
 
 /**
- * Custom error class representing an error in the Network domain.
+ * Custom domain error for network-related operations.
  *
  * @example
  * ```typescript
@@ -34,19 +38,19 @@ export enum NetworkErrorType {
  * ```
  */
 export class NetworkError extends Error {
-    /** Type of network error that occurred. */
+    /** The specific type of network error that occurred. */
     public readonly type: NetworkErrorType;
 
     /**
-     * Creates a new instance of `NetworkError`.
-     * @param {NetworkErrorType} type - The specific type of network error.
+     * Creates a new instance of {@link NetworkError}.
+     * @param {NetworkErrorType} type - The specific error type.
      */
     constructor(type: NetworkErrorType) {
         super(type);
         this.name = "NetworkError";
         this.type = type;
 
-        // Required when extending built-in classes
+        // Ensure correct prototype chain for `instanceof` checks.
         Object.setPrototypeOf(this, NetworkError.prototype);
     }
 }
