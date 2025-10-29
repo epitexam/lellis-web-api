@@ -5,42 +5,58 @@ import { UserError, UserErrorType } from "../enums/UserErrorType";
 
 /**
  * @file User.ts
- * @description Defines the User entity and its associated domain logic.
- * Includes strong validation, encapsulation, and domain-specific invariants.
- */
-
-/**
- * Represents the required properties to instantiate a {@link User} entity.
- */
-export interface UserProps {
-    uuid: string;
-    first_name: string;
-    last_name: string;
-    email: Email;
-    password: Password;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-/**
- * The {@link User} entity represents a system user within the domain layer.
+ * @description
+ * Defines the `User` aggregate root within the domain layer.
  *
- * This class encapsulates user-related behavior, including validation logic,
- * and ensures all invariants are respected (e.g., strong password, valid email).
+ * The `User` entity encapsulates the identity and credentials
+ * of a system user, enforcing all validation and domain invariants
+ * related to user creation, authentication, and update lifecycle.
+ *
+ * Responsibilities:
+ * - Represent the domain identity of a system user.
+ * - Guarantee strong encapsulation of credentials (Email, Password).
+ * - Enforce domain invariants (valid email, strong password, etc.).
+ *
+ * This class does **not** manage roles, permissions, or network membership,
+ * which belong to other bounded contexts (e.g., Network).
+ *
+ * @example
+ * ```typescript
+ * const user = User.create({
+ *   first_name: "Alice",
+ *   last_name: "Martin",
+ *   email: "alice.martin@example.com",
+ *   password: "secure_password_123"
+ * });
+ *
+ * console.log(user.fullName); // "Alice Martin"
+ * ```
  */
 export class User {
+    /** Unique user identifier (UUID). */
     private _uuid: string;
+
+    /** User's first name. */
     private _first_name: string;
+
+    /** User's last name. */
     private _last_name: string;
+
+    /** User's email as a validated value object. */
     private _email: Email;
+
+    /** User's password as a validated value object. */
     private _password: Password;
+
+    /** Timestamp for when the user was created. */
     private _createdAt: Date;
+
+    /** Timestamp for when the user was last updated. */
     private _updatedAt: Date;
 
     /**
-     * Private constructor to enforce controlled instantiation via factory methods.
-     *
-     * @param {UserProps} props - The user's core properties.
+     * Represents the internal structure used to instantiate a {@link User}.
+     * Used only within the domain, not exposed externally.
      */
     private constructor(props: UserProps) {
         this._uuid = props.uuid;
@@ -55,10 +71,14 @@ export class User {
     }
 
     /**
-     * Validates the integrity and invariants of the {@link User} entity.
+     * Validates all invariants of the {@link User} entity.
+     *
+     * Ensures:
+     * - Password hash meets minimum strength requirements.
+     * - Email value object has already validated structure.
      *
      * @private
-     * @throws {UserError} If any domain constraint is violated.
+     * @throws {UserError} If any invariant is violated.
      */
     private validate(): void {
         if (this._password.value.length < 10) {
@@ -66,50 +86,50 @@ export class User {
         }
     }
 
-    /** @returns {string} The user's unique identifier (UUID). */
+    /** @returns {string} The user’s unique identifier (UUID). */
     get uuid(): string {
         return this._uuid;
     }
 
-    /** @returns {string} The user's first name. */
+    /** @returns {string} The user’s first name. */
     get first_name(): string {
         return this._first_name;
     }
 
-    /** @returns {string} The user's last name. */
+    /** @returns {string} The user’s last name. */
     get last_name(): string {
         return this._last_name;
     }
 
-    /** @returns {string} The user's full name (first + last). */
+    /** @returns {string} The user’s full name (first + last). */
     get fullName(): string {
         return `${this._first_name} ${this._last_name}`;
     }
 
-    /** @returns {Email} The user's email address (value object). */
+    /** @returns {Email} The user’s validated email value object. */
     get email(): Email {
         return this._email;
     }
 
-    /** @returns {string} The user's password hash (value only). */
+    /** @returns {string} The user’s password hash (value only). */
     get password(): string {
         return this._password.value;
     }
 
-    /** @returns {Date} The date when the user was created. */
+    /** @returns {Date} The creation timestamp of the user. */
     get createdAt(): Date {
         return this._createdAt;
     }
 
-    /** @returns {Date} The date when the user was last updated. */
+    /** @returns {Date} The last update timestamp of the user. */
     get updatedAt(): Date {
         return this._updatedAt;
     }
 
     /**
-     * Updates the user's email address.
+     * Updates the user’s email address.
      *
-     * @param {Email} newEmail - The new email value object.
+     * @param {Email} newEmail - A validated {@link Email} value object.
      */
     updateEmail(newEmail: Email): void {
         this._email = newEmail;
@@ -117,9 +137,10 @@ export class User {
     }
 
     /**
-     * Updates the user's password.
+     * Updates the user’s password.
      *
-     * @param {string} newPassword - The new password value.
+     * @param {string} newPassword - The new password (already hashed).
+     *
      * @throws {UserError} If the password does not meet domain constraints.
      */
     updatePassword(newPassword: string): void {
@@ -131,7 +152,7 @@ export class User {
     }
 
     /**
-     * Updates the user's name.
+     * Updates the user’s name.
      *
      * @param {string} first_name - The new first name.
      * @param {string} last_name - The new last name.
@@ -143,9 +164,10 @@ export class User {
     }
 
     /**
-     * Converts the {@link User} entity into a plain JavaScript object for serialization.
+     * Converts the {@link User} entity into a serializable object.
+     * The password is intentionally omitted for security.
      *
-     * @returns {object} A JSON-safe representation of the user (password excluded).
+     * @returns {object} A plain JavaScript object representation of the user.
      */
     toJSON(): object {
         return {
@@ -153,25 +175,29 @@ export class User {
             first_name: this._first_name,
             last_name: this._last_name,
             fullName: this.fullName,
-            email: this._email,
+            email: this._email.value,
             createdAt: this._createdAt,
             updatedAt: this._updatedAt,
         };
     }
 
     /**
-     * Factory method for creating a new {@link User} instance from a DTO.
+     * Factory method that creates a new {@link User} entity
+     * from a validated Data Transfer Object (DTO).
+     *
+     * This ensures the domain remains independent from
+     * infrastructure concerns (e.g., ORM, database models).
      *
      * @static
-     * @param {ICreateUserDTO} data - The user data transfer object.
-     * @returns {User} A new {@link User} entity.
+     * @param {ICreateUserDTO} data - DTO containing basic user info.
+     * @returns {User} The newly created {@link User} entity.
      *
      * @example
      * ```typescript
      * const user = User.create({
-     *   email: "john.doe@example.com",
      *   first_name: "John",
      *   last_name: "Doe",
+     *   email: "john.doe@example.com",
      *   password: "hashed_password_here"
      * });
      * ```
@@ -181,7 +207,7 @@ export class User {
         const newPassword = new Password({ value: password });
 
         return new User({
-            uuid: crypto.randomUUID?.() ?? "temp-uuid", // safer cross-runtime UUID generation
+            uuid: crypto.randomUUID?.() ?? "temp-uuid",
             first_name,
             last_name,
             password: newPassword,
@@ -190,4 +216,18 @@ export class User {
             updatedAt: new Date(),
         });
     }
+}
+
+/**
+ * Represents the core properties required to instantiate a {@link User}.
+ * Typically used internally within the domain layer.
+ */
+export interface UserProps {
+    uuid: string;
+    first_name: string;
+    last_name: string;
+    email: Email;
+    password: Password;
+    createdAt: Date;
+    updatedAt: Date;
 }
