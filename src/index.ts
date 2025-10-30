@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { registerUserRoutes } from "./presentation/elysia/user";
 import { jwt } from "@elysiajs/jwt";
+import { indexRoutes } from "./presentation/elysia";
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -13,6 +14,7 @@ app.use(
     })
 );
 
+app.use(indexRoutes)
 app.use(registerUserRoutes)
 app.listen(PORT);
 
