@@ -57,7 +57,7 @@ export interface IUsersRepository {
    * @param {IUpdateUserRequestDTO} data - The data to update the user with.
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
-  update(user: IUserOutputRequestDTO, data: IUpdateUserRequestDTO): Promise<IUserOutputRequestDTO>
+  update(user: Partial<IUserOutputRequestDTO>, data: Partial<IUpdateUserRequestDTO>): Promise<IUserOutputRequestDTO>
 
   /**
    * Deletes a user by ID.
