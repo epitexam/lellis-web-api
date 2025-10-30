@@ -1,10 +1,8 @@
 import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO"
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO"
-import { User } from "../../../../domain/user/entities/User"
 import { UserErrorType } from "../../../../domain/user/enums/UserErrorType"
 import { IPasswordHasher } from "../../../providers/IPasswordHasher"
 import { IUsersRepository } from "../../../repositories/IUsersRepository"
-import { ICreateUserUseCase, IUseCaseResult } from "./ICreateUserUseCase"
+import { ICreateUserUseCase } from "./ICreateUserUseCase"
 
 /**
  * Use case responsible for creating a new user.
@@ -32,7 +30,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
      *
      * @async
      * @param {ICreateUserDTO} data - The user data for creation (email, name, password, etc.).
-     * @returns {Promise<{ data: any; success: boolean }>} 
+     * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>} 
      * Returns an object with:
      * - `data`: The created user or an error object.
      * - `success`: Indicates whether the operation succeeded.
@@ -55,12 +53,12 @@ export class CreateUserUseCase implements ICreateUserUseCase {
         try {
             const userAlreadyExists = await this.userRepository.findByEmail(email)
             if (userAlreadyExists) {
-                return { success: false, error: UserErrorType.EmailAlreadyUsed }
+                return { success: false, error: UserErrorType.EMAIL_ALREADY_USED }
             }
 
             const passwordHashed = await this.passwordHasher.hashPassword(password)
             if (!passwordHashed) {
-                return { success: false, error: UserErrorType.PasswordHashingFailed }
+                return { success: false, error: UserErrorType.PASSWORD_HASHING_FAILED }
             }
 
             const user = await this.userRepository.create({
@@ -84,11 +82,11 @@ export class CreateUserUseCase implements ICreateUserUseCase {
                 // SQLite
                 err.code?.includes('SQLITE_CONSTRAINT')
             ) {
-                return { success: false, error: UserErrorType.DatabaseError }
+                return { success: false, error: UserErrorType.DATABASE_ERROR }
             }
 
 
-            return { success: false, error: UserErrorType.UnexpectedError }
+            return { success: false, error: UserErrorType.UNEXPECTED_ERROR }
         }
 
     }
