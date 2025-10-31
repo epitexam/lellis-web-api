@@ -3,6 +3,7 @@ import { IUsersRepository } from "../../../application/repositories/IUsersReposi
 import { ICreateUserDTO } from "../../../domain/user/dtos/ICreateUserDTO"
 import { IUpdateUserRequestDTO } from "../../../domain/user/dtos/IUpdateUserRequestDTO"
 import { IUserOutputRequestDTO } from "../../../domain/user/dtos/IUserOutputRequestDTO"
+import { IUserFullDTO } from "../../../domain/user/dtos/IUserFullDTO"
 
 /**
  * Prisma-based implementation of the {@link IUsersRepository}.
@@ -112,6 +113,15 @@ export class PrismaUserRepository implements IUsersRepository {
     return { ...user, ...data, updated_at: new Date() }
   }
 
+
+  /**
+   * Missing documentation
+   *
+   */
+  async findUserWithSensitiveData(data: Partial<ICreateUserDTO>): Promise<IUserFullDTO | null> {
+    return null
+  }
+  
   /**
    * Deletes a user by ID.
    *
