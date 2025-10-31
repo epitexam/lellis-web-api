@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { registerUserRoutes } from "./presentation/elysia/user";
+import { userRoutes } from "./presentation/elysia/user";
 import { jwt } from "@elysiajs/jwt";
 import { indexRoutes } from "./presentation/elysia";
 
@@ -15,7 +15,7 @@ app.use(
 );
 
 app.use(indexRoutes)
-app.use(registerUserRoutes)
+app.use(userRoutes)
 app.listen(PORT);
 
 console.log(`Elysia is running at ${app.server?.hostname}:${app.server?.port}`);

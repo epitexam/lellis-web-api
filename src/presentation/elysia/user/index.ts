@@ -12,7 +12,7 @@ const createUserBody = t.Object({
 
 const tokenProvider = new TokenProvider(process.env.JWT_SECRET || "super_secret_key");
 
-export const registerUserRoutes = (app: Elysia) =>
+export const userRoutes = (app: Elysia) =>
     app.group("/users", (group) =>
         group
             .post(
