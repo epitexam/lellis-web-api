@@ -1,49 +1,51 @@
 /**
  * @file INetworkOutputRequestDTO.ts
  * @description
- * Generic output DTO for network-related responses.
+ * Data Transfer Object (DTO) representing a serialized view of the {@link Network} entity.
+ * This DTO is intended to be returned as part of a {@link IUseCaseResult<INetworkOutputRequestDTO>}.
  *
- * This DTO serves as a base for all network output operations,
- * providing a consistent structure for response data.
- * It includes metadata about the operation result.
+ * It focuses strictly on domain data and omits metadata like `success` or `error`,
+ * which are handled by the outer use case result wrapper.
  *
  * @example
  * ```ts
- * const output: INetworkOutputRequestDTO = {
+ * const result: IUseCaseResult<INetworkOutputRequestDTO> = {
  *   success: true,
- *   message: "Network created successfully",
- *   data: { networkId: "uuid-of-new-network" }
+ *   data: {
+ *     uuid: "uuid-123",
+ *     name: "Hospital A",
+ *     adminId: "user-uuid",
+ *     members: [{ userId: "user-uuid", roleId: "ADMIN" }],
+ *     roles: [{ name: "DOCTOR", permissions: [{ action: "READ", resource: "PATIENT" }] }],
+ *     resources: [{ id: "res-1", name: "Dashboard", ownerId: "user-uuid" }],
+ *     createdAt: "2025-01-01T12:00:00Z",
+ *     updatedAt: "2025-01-01T12:00:00Z"
+ *   }
  * };
  * ```
  */
 export interface INetworkOutputRequestDTO {
-    /**
-     * Indicates whether the operation was successful.
-     * @example true
-     */
-    success: boolean;
+    /** Unique identifier of the network. */
+    uuid: string;
 
-    /**
-     * A human-readable message describing the result of the operation.
-     * @example "Network created successfully"
-     */
-    message: string;
+    /** Display name of the network. */
+    name: string;
 
-    /**
-     * Optional data payload returned by the operation.
-     * Can contain network details, IDs, or other relevant information.
-     * @example { networkId: "a1b2c3d4-e5f6-7890-1234-567890abcdef" }
-     */
-    data?: any;
+    /** UUID of the network administrator. */
+    adminId: string;
 
-    /**
-     * Optional error details if the operation failed.
-     * Contains error type and additional context.
-     * @example { type: "NetworkError", code: "EMPTY_NAME" }
-     */
-    error?: {
-        type: string;
-        code: string;
-        details?: string;
-    };
+    /** Members of the network with their assigned roles. */
+    members: { userId: string; roleId: string }[];
+
+    /** Defined roles and their corresponding permissions. */
+    roles: { name: string; permissions: { action: string; resource: string }[] }[];
+
+    /** List of resources registered within the network. */
+    resources: { id: string; name: string; ownerId: string }[];
+
+    /** Timestamp of creation. */
+    createdAt: Date;
+
+    /** Timestamp of last update. */
+    updatedAt: Date;
 }
