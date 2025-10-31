@@ -27,6 +27,9 @@ export enum NetworkErrorType {
 
     /** The resource was not found in the network. */
     RESOURCE_NOT_FOUND = "Resource not found in the network.",
+
+    /** The network name is already used. */
+    NAME_ALREADY_USED = "Name already used by a network.",
 }
 
 /**
