@@ -2,8 +2,11 @@
  * @file NetworkErrorType.ts
  * @description
  * Defines network-specific error types and the {@link NetworkError} class.
- * Used to standardize and type errors related to network validation and mutation
- * within the domain layer.
+ * Used to standardize and type errors related to network validation, creation,
+ * and mutation within the domain layer.
+ *
+ * These errors are typically thrown or returned by use cases and entities
+ * when business invariants are violated.
  */
 
 /**
@@ -15,6 +18,12 @@ export enum NetworkErrorType {
 
     /** The admin user cannot be null or undefined. */
     MISSING_ADMIN = "Network must have an admin user.",
+
+    /** The provided admin user does not exist in the system. */
+    ADMIN_NOT_FOUND = "Admin user not found in the system.",
+
+    /** A network with this name already exists. */
+    DUPLICATE_NETWORK_NAME = "A network with this name already exists.",
 
     /** The user is not a member of this network. */
     USER_NOT_FOUND = "User is not a member of this network.",
@@ -28,12 +37,21 @@ export enum NetworkErrorType {
     /** The resource was not found in the network. */
     RESOURCE_NOT_FOUND = "Resource not found in the network.",
 
-    /** The network name is already used. */
+    /** The network name is already used. (Alias for backward compatibility.) */
     NAME_ALREADY_USED = "Name already used by a network.",
+
+    /** A database constraint or persistence error occurred. */
+    DATABASE_ERROR = "A database error occurred while processing the network.",
+
+    /** An unexpected error occurred that does not match a known case. */
+    UNEXPECTED_ERROR = "An unexpected error occurred while handling the network operation.",
 }
 
 /**
  * Custom domain error for network-related operations.
+ *
+ * This class allows domain logic and use cases to throw rich,
+ * type-safe errors without depending on external libraries.
  *
  * @example
  * ```typescript
@@ -46,6 +64,7 @@ export class NetworkError extends Error {
 
     /**
      * Creates a new instance of {@link NetworkError}.
+     * 
      * @param {NetworkErrorType} type - The specific error type.
      */
     constructor(type: NetworkErrorType) {
@@ -53,7 +72,7 @@ export class NetworkError extends Error {
         this.name = "NetworkError";
         this.type = type;
 
-        // Ensure correct prototype chain for `instanceof` checks.
+        // Ensures correct prototype chain for `instanceof` checks.
         Object.setPrototypeOf(this, NetworkError.prototype);
     }
 }
