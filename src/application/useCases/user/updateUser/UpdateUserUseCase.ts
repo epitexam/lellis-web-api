@@ -4,6 +4,7 @@ import { UserErrorType } from "../../../../domain/user/enums/UserErrorType"
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult"
 import { IPasswordHasher } from "../../../providers/IPasswordHasher"
 import { IUsersRepository } from "../../../repositories/IUsersRepository"
+import { IUpdateUserUseCase } from "./IUpdateUserUseCase"
 
 /**
  * Use case responsible for updating an existing user.
@@ -17,7 +18,7 @@ import { IUsersRepository } from "../../../repositories/IUsersRepository"
  * Sensitive data (like password hashes) are never exposed
  * outside the application layer.
  */
-export class UpdateUserUseCase {
+export class UpdateUserUseCase implements IUpdateUserUseCase {
     constructor(
         private readonly userRepository: IUsersRepository,
         private readonly passwordHasher: IPasswordHasher

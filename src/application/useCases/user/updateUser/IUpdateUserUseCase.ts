@@ -8,7 +8,7 @@ import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
  * Defines the contract for a use case responsible for updating a user.
  * Any implementation of this interface must provide the `execute` method.
  */
-export interface IUpdateUserCase {
+export interface IUpdateUserUseCase {
     /**
      * Executes the user updating process.
      * 
