@@ -1,5 +1,6 @@
 import { ICreateUserDTO } from "../../domain/user/dtos/ICreateUserDTO"
 import { IUpdateUserRequestDTO } from "../../domain/user/dtos/IUpdateUserRequestDTO"
+import { IUserFullDTO } from "../../domain/user/dtos/IUserFullDTO"
 import { IUserOutputRequestDTO } from "../../domain/user/dtos/IUserOutputRequestDTO"
 import { PaginationResponseDTO } from "../../presentation/dtos/PaginationResponseDTO"
 
@@ -48,6 +49,14 @@ export interface IUsersRepository {
    * @returns {Promise<PaginationResponseDTO<IUserOutputRequestDTO>>} The paginated user list.
    */
   findAll(pageNumber: number): Promise<PaginationResponseDTO<IUserOutputRequestDTO>>
+
+  /**
+   * Find a user, including all sensitive information.
+   *
+   * ⚠️ This method should be used only internally (e.g., for update operations).
+   * Sensitive fields must never be returned to API consumers.
+  */
+  findUserWithSensitiveData(data: Partial<ICreateUserDTO>): Promise<IUserFullDTO | null>
 
   /**
    * Updates an existing user.
