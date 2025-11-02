@@ -45,6 +45,13 @@ export enum NetworkErrorType {
 
     /** An unexpected error occurred that does not match a known case. */
     UNEXPECTED_ERROR = "An unexpected error occurred while handling the network operation.",
+
+    /** An unexpected error occurred when no network id is provided. */
+    MISSING_NETWORK_ID = "no network id was provided.",
+
+    /** An unexpected error occurred when no network was found. */
+    NETWORK_NOT_FOUND = "Network not found.",
+
 }
 
 /**
