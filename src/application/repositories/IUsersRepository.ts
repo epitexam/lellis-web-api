@@ -1,4 +1,5 @@
 import { ICreateUserDTO } from "../../domain/user/dtos/ICreateUserDTO"
+import { ISearchUsersInputDTO } from "../../domain/user/dtos/ISearchUsersInputDTO"
 import { IUpdateUserRequestDTO } from "../../domain/user/dtos/IUpdateUserRequestDTO"
 import { IUserFullDTO } from "../../domain/user/dtos/IUserFullDTO"
 import { IUserOutputRequestDTO } from "../../domain/user/dtos/IUserOutputRequestDTO"
@@ -67,6 +68,20 @@ export interface IUsersRepository {
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
   update(user: Partial<IUserOutputRequestDTO>, data: Partial<IUpdateUserRequestDTO>): Promise<IUserOutputRequestDTO>
+
+
+  /**
+   * Searches for users based on optional filters such as first name, last name, or email.
+   *
+   * This method allows partial matches and should be used for listing users
+   * according to search criteria. Implementations may support pagination or
+   * advanced filtering if needed.
+   *
+   * @async
+   * @param {ISearchUsersInputDTO} criteria - Optional search filters.
+   * @returns {Promise<IUserOutputRequestDTO[]>} Array of users matching the criteria.
+   */
+  searchUsers(criteria: ISearchUsersInputDTO): Promise<IUserOutputRequestDTO[]>;
 
   /**
    * Deletes a user by ID.
