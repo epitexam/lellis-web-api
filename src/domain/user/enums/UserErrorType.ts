@@ -69,6 +69,9 @@ export enum UserErrorType {
 
   /** Indicates that the password hash does not meet domain rules. */
   INVALID_PASSWORD_HASH = "Invalid password hash.",
+
+  /** Indicates that the user uuid was not provided. */
+  MISSING_USER_UUID = "No user uuid was provided.",
 }
 
 /**
