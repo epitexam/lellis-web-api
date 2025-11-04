@@ -52,6 +52,9 @@ export enum NetworkErrorType {
     /** An unexpected error occurred when no network was found. */
     NETWORK_NOT_FOUND = "Network not found.",
 
+    /** An unexpected error occurred when the network id provided is not a valid uuid. */
+    INVALID_NETWORK_ID = "Network id provided is not a valid uuid.",
+
 }
 
 /**
