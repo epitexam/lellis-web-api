@@ -1,3 +1,4 @@
+import { IGetUserDto } from "../../../../domain/user/dtos/IGetUserDTO";
 import { IUserInputRequestDTO } from "../../../../domain/user/dtos/IUserInputRequestDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
@@ -21,11 +22,11 @@ import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
  */
 export interface IGetUserUseCase {
     /**
-     * Executes the use case to fetch a single user by UUID or partial identifiers.
+     * Executes the use case to fetch a single user by UUID
      *
-     * @param {Partial<IUserInputRequestDTO>} data - Partial DTO containing user query criteria.
+     * @param {IGetUserDto} data - Uuid used to identify a user by its unique identifier.
      * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>} The result of the operation,
      * including success status, user data if found, or error message if failed.
      */
-    execute(data: Partial<IUserInputRequestDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>>;
+    execute(data: IGetUserDto): Promise<IUseCaseResult<IUserOutputRequestDTO>>;
 }
