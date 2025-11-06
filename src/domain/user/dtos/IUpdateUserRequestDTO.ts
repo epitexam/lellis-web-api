@@ -5,6 +5,9 @@
  */
 export interface IUpdateUserRequestDTO {
 
+    /** The user's unique uuid. */
+    user_id: string;
+
     /** The user's new first name. */
     first_name: string;
 
