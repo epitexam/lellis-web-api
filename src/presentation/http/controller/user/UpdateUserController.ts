@@ -1,7 +1,7 @@
-import { IUpdateUserUseCase } from "../../../application/useCases/user/updateUser/IUpdateUserUseCase";
-import { IUpdateUserRequestDTO } from "../../../domain/user/dtos/IUpdateUserRequestDTO";
-import { IUserOutputRequestDTO } from "../../../domain/user/dtos/IUserOutputRequestDTO";
-import { IController } from "../interface/IController";
+import { IUpdateUserUseCase } from "../../../../application/useCases/user/updateUser/IUpdateUserUseCase";
+import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO";
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { IController } from "../../interface/IController";
 
 export class UpdateUserController implements IController<IUpdateUserRequestDTO, Partial<IUserOutputRequestDTO>> {
     constructor(private readonly updateUserUseCase: IUpdateUserUseCase) { }

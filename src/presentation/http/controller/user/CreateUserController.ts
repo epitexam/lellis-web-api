@@ -1,7 +1,7 @@
-import { ICreateUserDTO } from "../../../domain/user/dtos/ICreateUserDTO";
-import { IUserOutputRequestDTO } from "../../../domain/user/dtos/IUserOutputRequestDTO";
-import { ICreateUserUseCase } from "../../../application/useCases/user/CreateUser/ICreateUserUseCase";
-import { IController } from "../interface/IController";
+import { ICreateUserUseCase } from "../../../../application/useCases/user/CreateUser/ICreateUserUseCase";
+import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO";
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { IController } from "../../interface/IController";
 
 /**
  * Controller responsible for handling user creation requests.
