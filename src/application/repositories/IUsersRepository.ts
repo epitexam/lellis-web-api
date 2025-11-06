@@ -56,8 +56,11 @@ export interface IUsersRepository {
    *
    * ⚠️ This method should be used only internally (e.g., for update operations).
    * Sensitive fields must never be returned to API consumers.
-  */
-  findUserWithSensitiveData(data: Partial<ICreateUserDTO>): Promise<IUserFullDTO | null>
+   *
+   * @param {string} userId - The unique identifier (UUID) of the user to retrieve.
+   * @returns {Promise<IUserFullDTO | null>} The user with sensitive fields, or null if not found.
+   */
+  findUserWithSensitiveData(userId: string): Promise<IUserFullDTO | null>;
 
   /**
    * Updates an existing user.
