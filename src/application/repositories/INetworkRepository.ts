@@ -104,4 +104,19 @@ export interface INetworkRepository {
      * ```
      */
     deleteNetwork(id: string): Promise<void>;
+
+    /**
+     * Adds a member to a network.
+     *
+     * @param userId - The unique identifier of the user to add as a member.
+     * @param networkId - The unique identifier of the network to which the user will be added.
+     * @returns A promise that resolves with the updated network containing the new member as an `INetworkOutputRequestDTO`.
+     *
+     * @example
+     * ```ts
+     * const updatedNetwork = await networkRepository.addMember("user-uuid-123", "network-uuid-456");
+     * console.log(`User added to network: ${updatedNetwork.name}`);
+     * ```
+     */
+    addMemberToNetwork(userId: string, networkId: string): Promise<Partial<INetworkOutputRequestDTO>>;
 }
