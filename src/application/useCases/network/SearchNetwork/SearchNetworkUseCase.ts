@@ -55,12 +55,12 @@ export class SearchNetworkUseCase implements ISearchNetworkUseCase {
      * @param {ISearchNetworkInputDTO} data
      * Object containing the target network's display name.
      *
-     * @returns {Promise<IUseCaseResult<INetworkOutputRequestDTO>>}
+     * @returns {Promise<IUseCaseResult<INetworkOutputRequestDTO[]>>}
      * A structured result containing either:
      * - `data`: The retrieved network information (on success).
      * - `error`: A {@link NetworkErrorType} describing the failure (on error).
      */
-    async execute(data: ISearchNetworkInputDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
+    async execute(data: ISearchNetworkInputDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO[]>> {
         try {
             if (!data.name) {
                 return {

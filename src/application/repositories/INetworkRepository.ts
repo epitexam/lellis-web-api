@@ -49,7 +49,7 @@ export interface INetworkRepository {
      * }
      * ```
      */
-    findNetworkByName(name: string): Promise<INetworkOutputRequestDTO | null>;
+    findNetworkByName(name: string): Promise<INetworkOutputRequestDTO[] | null>;
 
     /**
      * Finds a network by its unique identifier.

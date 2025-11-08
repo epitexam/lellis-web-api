@@ -42,5 +42,5 @@ export interface ISearchNetworkUseCase {
      * - `data`: the found network (on success)
      * - `error`: a {@link NetworkErrorType} code (on failure)
      */
-    execute(data: ISearchNetworkInputDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>>;
+    execute(data: ISearchNetworkInputDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO[]>>;
 }
