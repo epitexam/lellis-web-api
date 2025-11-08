@@ -1,5 +1,5 @@
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
-import { IUpdateNetworkDTO } from "../../../../domain/network/dtos/IUpdateNetworkDTO";
+import { IUpdateNetworkRequestDTO } from "../../../../domain/network/dtos/IUpdateNetworkRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 
 /**
@@ -27,7 +27,7 @@ export interface IUpdateNetworkUseCase {
     /**
      * Executes the network update operation.
      * 
-     * @param {IUpdateNetworkDTO} data - The partial DTO containing fields to update.
+     * @param {IUpdateNetworkRequestDTO} data - The partial DTO containing fields to update.
      * Only provided fields will be changed; all others remain unchanged.
      * 
      * @returns {Promise<IUseCaseResult<Partial<INetworkOutputRequestDTO>>>} 
@@ -35,5 +35,5 @@ export interface IUpdateNetworkUseCase {
      * 
      * @throws Will propagate errors if the network does not exist, or validation rules fail.
      */
-    execute(data: IUpdateNetworkDTO): Promise<IUseCaseResult<Partial<INetworkOutputRequestDTO>>>;
+    execute(data: IUpdateNetworkRequestDTO): Promise<IUseCaseResult<Partial<INetworkOutputRequestDTO>>>;
 }

@@ -1,7 +1,7 @@
 import { INetworkRepository } from "../../../../application/repositories/INetworkRepository";
 import { ICreateNetworkDTO } from "../../../../domain/network/dtos/ICreateNetworkDTO";
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
-import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO";
+import { IUpdateNetworkRequestDTO } from "../../../../domain/network/dtos/IUpdateNetworkRequestDTO";
 
 export class PrismaNetworkRepository implements INetworkRepository {
     create(data: ICreateNetworkDTO): Promise<INetworkOutputRequestDTO> {
@@ -20,10 +20,10 @@ export class PrismaNetworkRepository implements INetworkRepository {
         throw new Error("Method not implemented yet")
     }
 
-    updateNetwork(id: string, data: IUpdateUserRequestDTO): Promise<INetworkOutputRequestDTO> {
+    updateNetwork(id: string, data: IUpdateNetworkRequestDTO): Promise<INetworkOutputRequestDTO> {
         throw new Error("Method not implemented yet")
     }
-
+    
     deleteNetwork(id: string): Promise<Partial<INetworkOutputRequestDTO>> {
         throw new Error("Method not implemented yet")
     }

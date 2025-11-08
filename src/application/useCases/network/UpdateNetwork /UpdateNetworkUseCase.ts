@@ -1,5 +1,5 @@
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
-import { IUpdateNetworkDTO } from "../../../../domain/network/dtos/IUpdateNetworkDTO";
+import { IUpdateNetworkRequestDTO } from "../../../../domain/network/dtos/IUpdateNetworkRequestDTO";
 import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
@@ -30,7 +30,7 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
     /**
      * Executes the network update operation.
      * 
-     * @param {Partial<IUpdateNetworkDTO>} data - Partial DTO with fields to update.
+     * @param {Partial<IUpdateNetworkRequestDTO>} data - Partial DTO with fields to update.
      * Only provided fields will be updated; others remain unchanged.
      * 
      * @returns {Promise<IUseCaseResult<INetworkOutputRequestDTO>>} 
@@ -49,7 +49,7 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
      * }
      * ```
      */
-    async execute(data: IUpdateNetworkDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
+    async execute(data: IUpdateNetworkRequestDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
         try {
 
             if (!data.networkId) {
