@@ -12,7 +12,7 @@
 
 import { ICreateNetworkDTO } from "../../domain/network/dtos/ICreateNetworkDTO";
 import { INetworkOutputRequestDTO } from "../../domain/network/dtos/INetworkOutputRequestDTO";
-import { IUpdateUserRequestDTO } from "../../domain/user/dtos/IUpdateUserRequestDTO";
+import { IUpdateNetworkDTO } from "../../domain/network/dtos/IUpdateNetworkDTO";
 
 /**
  * Represents the repository operations for the Network entity.
@@ -90,7 +90,7 @@ export interface INetworkRepository {
      * const updated = await networkRepository.updateNetwork("123", { description: "Updated description" });
      * ```
      */
-    updateNetwork(id: string, data: IUpdateUserRequestDTO): Promise<INetworkOutputRequestDTO>;
+    updateNetwork(id: string, data: IUpdateNetworkDTO): Promise<INetworkOutputRequestDTO>;
 
     /**
      * Deletes a network by its unique identifier.
