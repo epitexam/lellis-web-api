@@ -3,6 +3,7 @@ import { IUpdateNetworkDTO } from "../../../../domain/network/dtos/IUpdateNetwor
 import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
+import { IUsersRepository } from "../../../repositories/IUsersRepository";
 import { IUpdateNetworkUseCase } from "./IUpdateNetworkUseCase";
 
 /**
@@ -22,7 +23,8 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
      * @param {INetworkRepository} networkRepository - Repository for accessing network data.
      */
     constructor(
-        private networkRepository: INetworkRepository
+        private networkRepository: INetworkRepository,
+        private userRepository: IUsersRepository
     ) { }
 
     /**
@@ -47,16 +49,16 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
      * }
      * ```
      */
-    async execute(data: Partial<IUpdateNetworkDTO>): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
-
-        if (!data.networkId) {
-            return {
-                success: false,
-                error: NetworkErrorType.MISSING_NETWORK_ID
-            };
-        }
-
+    async execute(data: IUpdateNetworkDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
         try {
+
+            if (!data.networkId) {
+                return {
+                    success: false,
+                    error: NetworkErrorType.MISSING_NETWORK_ID
+                };
+            }
+
             const existingNetwork = await this.networkRepository.findNetworkById(data.networkId);
 
             if (!existingNetwork) {
@@ -64,6 +66,13 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
                     success: false,
                     error: NetworkErrorType.NETWORK_NOT_FOUND
                 };
+            }
+
+            if (existingNetwork.adminId === data.adminId) {
+                return {
+                    success: false,
+                    error: NetworkErrorType.NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK
+                }
             }
 
             const updatedNetwork = await this.networkRepository.updateNetwork(data.networkId, data);
