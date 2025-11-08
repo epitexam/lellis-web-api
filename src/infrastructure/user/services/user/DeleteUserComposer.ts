@@ -2,7 +2,7 @@ import { IUsersRepository } from "../../../../application/repositories/IUsersRep
 import { DeleteUserUseCase } from "../../../../application/useCases/user/DeleteUser/DeleteUserUseCase";
 import { IDeleteUserUseCase } from "../../../../application/useCases/user/DeleteUser/IDeleteUserUseCase";
 import { DeleteUserController } from "../../../../presentation/http/controller/user/DeleteUserController";
-import { PrismaUserRepository } from "../../repositories/PrismaUserRepository";
+import { PrismaUserRepository } from "../../repositories/prisma/PrismaUserRepository";
 
 export function DeleteUserComposer() {
     const repository: IUsersRepository = new PrismaUserRepository();

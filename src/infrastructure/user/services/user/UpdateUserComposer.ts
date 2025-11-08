@@ -4,7 +4,7 @@ import { IUpdateUserUseCase } from "../../../../application/useCases/user/update
 import { UpdateUserUseCase } from "../../../../application/useCases/user/updateUser/UpdateUserUseCase";
 import { UpdateUserController } from "../../../../presentation/http/controller/user/UpdateUserController";
 import { PasswordHasher } from "../../providers/HashProviser";
-import { PrismaUserRepository } from "../../repositories/PrismaUserRepository";
+import { PrismaUserRepository } from "../../repositories/prisma/PrismaUserRepository";
 
 export function UpdateUserComposer() {
     const repository: IUsersRepository = new PrismaUserRepository();

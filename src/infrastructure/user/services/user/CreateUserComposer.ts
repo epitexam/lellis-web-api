@@ -4,7 +4,7 @@ import { CreateUserUseCase } from "../../../../application/useCases/user/CreateU
 import { ICreateUserUseCase } from "../../../../application/useCases/user/CreateUser/ICreateUserUseCase";
 import { CreateUserController } from "../../../../presentation/http/controller/user/CreateUserController";
 import { PasswordHasher } from "../../providers/HashProviser";
-import { PrismaUserRepository } from "../../repositories/PrismaUserRepository";
+import { PrismaUserRepository } from "../../repositories/prisma/PrismaUserRepository";
 
 export function CreateUserComposer() {
     const repository: IUsersRepository = new PrismaUserRepository();

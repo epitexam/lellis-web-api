@@ -2,7 +2,7 @@ import { IUsersRepository } from "../../../../application/repositories/IUsersRep
 import { GetUserCase } from "../../../../application/useCases/user/GetUser/GetUserUseCase";
 import { IGetUserUseCase } from "../../../../application/useCases/user/GetUser/IGetUserUseCase";
 import { GetUserController } from "../../../../presentation/http/controller/user/GetUserController";
-import { PrismaUserRepository } from "../../repositories/PrismaUserRepository";
+import { PrismaUserRepository } from "../../repositories/prisma/PrismaUserRepository";
 
 
 export function GetUserComposer() {
