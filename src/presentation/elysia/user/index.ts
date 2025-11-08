@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { CreateUserComposer } from "../../../infrastructure/user/services/CreateUserComposer";
+import { CreateUserComposer } from "../../../infrastructure/user/services/user/CreateUserComposer";
 import { authMiddleware } from "../../http/middleware/authMiddleware";
 import { TokenProvider } from "../../../infrastructure/user/providers/TokenProvider";
 
