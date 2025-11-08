@@ -25,14 +25,7 @@ export class PrismaUserRepository implements IUsersRepository {
    * @returns {Promise<IUserOutputRequestDTO>} The created user.
    */
   async create({ email, last_name, first_name, password }: ICreateUserDTO): Promise<IUserOutputRequestDTO> {
-    // Simulate user creation
-    return {
-      uuid: Bun.randomUUIDv7(),
-      first_name,
-      last_name,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }
+    throw new Error("Method not implemented yet")
   }
 
   /**
@@ -54,21 +47,7 @@ export class PrismaUserRepository implements IUsersRepository {
   // }
 
   async findByEmail(email: string): Promise<IUserOutputRequestDTO | null> {
-    // Probabilité de 30% de renvoyer null
-    const shouldReturnNull = Math.random() < 0.3;
-
-    if (shouldReturnNull) {
-      return null;
-    }
-
-    // Sinon, on simule un utilisateur trouvé
-    return {
-      uuid: Bun.randomUUIDv7(),
-      first_name: "",
-      last_name: "",
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
+    throw new Error("Method not implemented yet")
   }
 
   /**
@@ -79,8 +58,7 @@ export class PrismaUserRepository implements IUsersRepository {
    * @returns {Promise<IUserOutputRequestDTO | null>} The found user or `null`.
    */
   async findById(id: string): Promise<IUserOutputRequestDTO | null> {
-    // Simulate finding a user by ID
-    return null
+    throw new Error("Method not implemented yet")
   }
 
   /**
@@ -91,14 +69,7 @@ export class PrismaUserRepository implements IUsersRepository {
    * @returns {Promise<PaginationResponseDTO<IUserOutputRequestDTO>>} The paginated user list.
    */
   async findAll(pageNumber: number): Promise<PaginationResponseDTO<IUserOutputRequestDTO>> {
-    // Simulate paginated user retrieval
-    return {
-      data: [],
-      totalItems: 0,
-      totalPages: 0,
-      currentPage: pageNumber,
-      pageSize: 10,
-    }
+    throw new Error("Method not implemented yet")
   }
 
   /**
@@ -110,8 +81,7 @@ export class PrismaUserRepository implements IUsersRepository {
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
   async update(user: IUserOutputRequestDTO, data: IUpdateUserRequestDTO): Promise<IUserOutputRequestDTO> {
-    // Simulate updating a user
-    return { ...user, ...data, updated_at: new Date() }
+    throw new Error("Method not implemented yet")
   }
 
   async searchUsers(criteria: ISearchUsersInputDTO): Promise<IUserOutputRequestDTO[]> {
@@ -123,7 +93,7 @@ export class PrismaUserRepository implements IUsersRepository {
    *
    */
   async findUserWithSensitiveData(userId: string): Promise<IUserFullDTO | null> {
-    return null
+    throw new Error("Method not implemented yet")
   }
 
   /**
@@ -134,7 +104,6 @@ export class PrismaUserRepository implements IUsersRepository {
    * @returns {Promise<void>} Returns nothing.
    */
   async delete(id: string): Promise<void> {
-    // Simulate user deletion
-    return
+    throw new Error("Method not implemented yet")
   }
 }
