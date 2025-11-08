@@ -1,4 +1,4 @@
-import { INetworkInputRequestDTO } from "../../../../domain/network/dtos/INetworkInputRequestDTO";
+import { IGetNetworkDTO } from "../../../../domain/network/dtos/IGetNetworkDTO";
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 
@@ -33,7 +33,7 @@ export interface IGetNetworkUseCase {
      * Executes the retrieval of a single network entity.
      *
      * @async
-     * @param {Partial<INetworkInputRequestDTO>} data
+     * @param {IGetNetworkDTO} data
      * The input data containing the network's unique identifier.
      * Only `networkId` is required; other fields are ignored.
      *
@@ -43,5 +43,5 @@ export interface IGetNetworkUseCase {
      * - `error`: a {@link NetworkErrorType} (on failure)
      *
      */
-    execute(data: Partial<INetworkInputRequestDTO>): Promise<IUseCaseResult<INetworkOutputRequestDTO>>;
+    execute(data: IGetNetworkDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>>;
 }

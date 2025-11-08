@@ -1,4 +1,4 @@
-import { INetworkInputRequestDTO } from "../../../../domain/network/dtos/INetworkInputRequestDTO";
+import { IGetNetworkDTO } from "../../../../domain/network/dtos/IGetNetworkDTO";
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
@@ -46,7 +46,7 @@ export class GetNetworkUseCase implements IGetNetworkUseCase {
      * Executes the retrieval process for a single network entity.
      *
      * @async
-     * @param {Partial<INetworkInputRequestDTO>} data
+     * @param {IGetNetworkDTO} data
      * Input containing the target network's unique identifier.
      *
      * @returns {Promise<IUseCaseResult<INetworkOutputRequestDTO>>}
@@ -55,7 +55,7 @@ export class GetNetworkUseCase implements IGetNetworkUseCase {
      * - `error`: A specific {@link NetworkErrorType} describing the failure (on error).
      *
      */
-    async execute(data: Partial<INetworkInputRequestDTO>): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
+    async execute(data: IGetNetworkDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO>> {
         try {
 
             if (!data.networkId || typeof data.networkId !== "string") {
