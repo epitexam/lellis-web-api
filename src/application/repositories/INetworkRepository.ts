@@ -103,7 +103,7 @@ export interface INetworkRepository {
      * await networkRepository.deleteNetwork("123");
      * ```
      */
-    deleteNetwork(id: string): Promise<void>;
+    deleteNetwork(id: string): Promise<Partial<INetworkOutputRequestDTO>>;
 
     /**
      * Adds a member to a network.
