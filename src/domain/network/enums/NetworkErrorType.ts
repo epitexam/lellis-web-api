@@ -55,6 +55,11 @@ export enum NetworkErrorType {
     /** An unexpected error occurred when the network id provided is not a valid uuid. */
     INVALID_NETWORK_ID = "Network id provided is not a valid uuid.",
 
+    /**
+     * Occurs when a user attempts to perform an action on a network where such an operation is not permitted due to insufficient permissions or access restrictions.
+     */
+    NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK = "You are not allowed to perform this action on this network."
+
 }
 
 /**
