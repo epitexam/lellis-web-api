@@ -35,6 +35,7 @@
 import { IDeleteNetworkDTO } from "../../../../domain/network/dtos/IDeleteNetworkDto";
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
@@ -80,31 +81,7 @@ export class DeleteNetworkUseCase implements IDeleteNetworkUseCase {
             };
 
         } catch (err: any) {
-            if (
-                err.code === "P2002" ||       // Prisma unique constraint
-                err.code === "23505" ||       // PostgreSQL unique constraint
-                err.code?.includes("ER_DUP_ENTRY") || // MySQL
-                err.code?.includes("SQLITE_CONSTRAINT") // SQLite
-            ) {
-                return {
-                    success: false,
-                    error: {
-                        type: NetworkErrorType.DATABASE_ERROR,
-                        message: NetworkErrorType.DATABASE_ERROR,
-                        statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
-                    }
-                };
-            }
-
-            return {
-                success: false,
-                error: {
-                    type: NetworkErrorType.UNEXPECTED_ERROR,
-                    message: NetworkErrorType.UNEXPECTED_ERROR,
-                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR
-                }
-            };
-
+            return useCaseErrorHandler(err);
         }
     }
 }
