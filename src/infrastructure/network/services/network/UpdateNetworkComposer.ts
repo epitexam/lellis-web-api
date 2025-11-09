@@ -2,7 +2,6 @@ import { INetworkRepository } from "../../../../application/repositories/INetwor
 import { IUsersRepository } from "../../../../application/repositories/IUsersRepository";
 import { IUpdateNetworkUseCase } from "../../../../application/useCases/network/UpdateNetwork /IUpdateNetworkUseCase";
 import { UpdateNetworkUseCase } from "../../../../application/useCases/network/UpdateNetwork /UpdateNetworkUseCase";
-import { IUpdateNetworkRequestDTO } from "../../../../domain/network/dtos/IUpdateNetworkRequestDTO";
 import { UpdateNetworkController } from "../../../../presentation/http/controller/network/UpdateNetworkController";
 import { PrismaNetworkRepository } from "../../../user/repositories/prisma/PrismaNetworkRepository";
 import { PrismaUserRepository } from "../../../user/repositories/prisma/PrismaUserRepository";
