@@ -1,6 +1,7 @@
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { IUpdateNetworkRequestDTO } from "../../../../domain/network/dtos/IUpdateNetworkRequestDTO";
-import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
@@ -53,26 +54,17 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
         try {
 
             if (!data.networkId) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.MISSING_NETWORK_ID
-                };
+                throw new NetworkError(NetworkErrorType.MISSING_NETWORK_ID)
             }
 
             const existingNetwork = await this.networkRepository.findNetworkById(data.networkId);
 
             if (!existingNetwork) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.NETWORK_NOT_FOUND
-                };
+                throw new NetworkError(NetworkErrorType.NETWORK_NOT_FOUND)
             }
 
             if (existingNetwork.adminId === data.adminId) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK
-                }
+                throw new NetworkError(NetworkErrorType.NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK)
             }
 
             const updatedNetwork = await this.networkRepository.updateNetwork(data.networkId, data);
@@ -81,19 +73,32 @@ export class UpdateNetworkUseCase implements IUpdateNetworkUseCase {
                 success: true,
                 data: updatedNetwork
             };
+            
         } catch (err: any) {
-
             if (
-                err.code === 'P2002' ||       // Prisma
-                err.code === '23505' ||       // PostgreSQL
-                err.code?.includes('ER_DUP_ENTRY') || // MySQL
-                err.code?.includes('SQLITE_CONSTRAINT') // SQLite
+                err.code === "P2002" ||       // Prisma unique constraint
+                err.code === "23505" ||       // PostgreSQL unique constraint
+                err.code?.includes("ER_DUP_ENTRY") || // MySQL
+                err.code?.includes("SQLITE_CONSTRAINT") // SQLite
             ) {
-                return { success: false, error: NetworkErrorType.DATABASE_ERROR };
+                return {
+                    success: false,
+                    error: {
+                        type: NetworkErrorType.DATABASE_ERROR,
+                        message: NetworkErrorType.DATABASE_ERROR,
+                        statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+                    }
+                };
             }
 
-            // Unexpected errors
-            return { success: false, error: NetworkErrorType.UNEXPECTED_ERROR };
+            return {
+                success: false,
+                error: {
+                    type: NetworkErrorType.UNEXPECTED_ERROR,
+                    message: NetworkErrorType.UNEXPECTED_ERROR,
+                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR
+                }
+            };
         }
     }
 }

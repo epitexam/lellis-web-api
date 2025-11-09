@@ -1,6 +1,7 @@
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { ISearchNetworkInputDTO } from "../../../../domain/network/dtos/ISearchNetworkInputDTO";
-import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
 import { ISearchNetworkUseCase } from "./ISearchNetworkUseCase";
@@ -63,36 +64,44 @@ export class SearchNetworkUseCase implements ISearchNetworkUseCase {
     async execute(data: ISearchNetworkInputDTO): Promise<IUseCaseResult<INetworkOutputRequestDTO[]>> {
         try {
             if (!data.name) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.EMPTY_NAME,
-                };
+                throw new NetworkError(NetworkErrorType.EMPTY_NAME)
             }
             const networkInfo = await this.networkRepository.findNetworkByName(data.name);
 
             if (!networkInfo) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.NETWORK_NOT_FOUND,
-                };
+                throw new NetworkError(NetworkErrorType.NETWORK_NOT_FOUND)
             }
 
             return {
                 success: true,
                 data: networkInfo,
             };
+            
         } catch (err: any) {
             if (
-                err.code === "P2002" || // Prisma
-                err.code === "23505" || // PostgreSQL
+                err.code === "P2002" ||       // Prisma unique constraint
+                err.code === "23505" ||       // PostgreSQL unique constraint
                 err.code?.includes("ER_DUP_ENTRY") || // MySQL
                 err.code?.includes("SQLITE_CONSTRAINT") // SQLite
             ) {
-                return { success: false, error: NetworkErrorType.DATABASE_ERROR };
+                return {
+                    success: false,
+                    error: {
+                        type: NetworkErrorType.DATABASE_ERROR,
+                        message: NetworkErrorType.DATABASE_ERROR,
+                        statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+                    }
+                };
             }
 
-            // Unexpected or unclassified error
-            return { success: false, error: NetworkErrorType.UNEXPECTED_ERROR };
+            return {
+                success: false,
+                error: {
+                    type: NetworkErrorType.UNEXPECTED_ERROR,
+                    message: NetworkErrorType.UNEXPECTED_ERROR,
+                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR
+                }
+            };
         }
     }
 }

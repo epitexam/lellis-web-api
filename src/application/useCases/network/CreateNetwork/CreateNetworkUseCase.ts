@@ -2,6 +2,7 @@ import { ICreateNetworkDTO } from "../../../../domain/network/dtos/ICreateNetwor
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { Network } from "../../../../domain/network/entities/Network";
 import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
@@ -53,35 +54,23 @@ export class CreateNetworkUseCase implements ICreateNetworkUseCase {
         try {
 
             if (!data.name) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.EMPTY_NAME,
-                };
+                throw new NetworkError(NetworkErrorType.EMPTY_NAME)
             }
 
             if (!data.adminId) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.MISSING_ADMIN,
-                };
+                throw new NetworkError(NetworkErrorType.MISSING_ADMIN)
             }
 
             const admin = await this.userRepository.findById(data.adminId);
 
             if (!admin) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.ADMIN_NOT_FOUND,
-                };
+                throw new NetworkError(NetworkErrorType.ADMIN_NOT_FOUND)
             }
 
             const existingNetwork = await this.networkRepository.findNetworkByName(data.name);
 
             if (existingNetwork) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.DUPLICATE_NETWORK_NAME,
-                };
+                throw new NetworkError(NetworkErrorType.DUPLICATE_NETWORK_NAME)
             }
 
             const network = new Network(Bun.randomUUIDv7(), data.name, admin.uuid);
@@ -94,18 +83,33 @@ export class CreateNetworkUseCase implements ICreateNetworkUseCase {
                 success: true,
                 data: dto,
             };
-        } catch (error: any) {
-            if (error instanceof NetworkError) {
+
+        } catch (err: any) {
+            if (
+                err.code === "P2002" ||       // Prisma unique constraint
+                err.code === "23505" ||       // PostgreSQL unique constraint
+                err.code?.includes("ER_DUP_ENTRY") || // MySQL
+                err.code?.includes("SQLITE_CONSTRAINT") // SQLite
+            ) {
                 return {
                     success: false,
-                    error: error.type,
+                    error: {
+                        type: NetworkErrorType.DATABASE_ERROR,
+                        message: NetworkErrorType.DATABASE_ERROR,
+                        statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+                    }
                 };
             }
 
             return {
                 success: false,
-                error: "UNEXPECTED_ERROR",
+                error: {
+                    type: NetworkErrorType.UNEXPECTED_ERROR,
+                    message: NetworkErrorType.UNEXPECTED_ERROR,
+                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR
+                }
             };
+
         }
     }
 }

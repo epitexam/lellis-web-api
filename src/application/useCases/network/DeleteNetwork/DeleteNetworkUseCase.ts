@@ -34,7 +34,8 @@
  */
 import { IDeleteNetworkDTO } from "../../../../domain/network/dtos/IDeleteNetworkDto";
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
-import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
 import { IDeleteNetworkUseCase } from "./IDeleteNetworkUseCase";
@@ -64,17 +65,11 @@ export class DeleteNetworkUseCase implements IDeleteNetworkUseCase {
             const networkInfo = await this.networkRepository.findNetworkById(data.networkId);
 
             if (!networkInfo) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.NETWORK_NOT_FOUND
-                };
+                throw new NetworkError(NetworkErrorType.NETWORK_NOT_FOUND)
             }
 
             if (networkInfo.adminId !== data.adminId) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK
-                };
+                throw new NetworkError(NetworkErrorType.NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK)
             }
 
             await this.networkRepository.deleteNetwork(data.networkId);
@@ -86,16 +81,30 @@ export class DeleteNetworkUseCase implements IDeleteNetworkUseCase {
 
         } catch (err: any) {
             if (
-                err.code === 'P2002' ||       // Prisma constraint error
-                err.code === '23505' ||       // PostgreSQL unique violation
-                err.code?.includes('ER_DUP_ENTRY') || // MySQL
-                err.code?.includes('SQLITE_CONSTRAINT') // SQLite
+                err.code === "P2002" ||       // Prisma unique constraint
+                err.code === "23505" ||       // PostgreSQL unique constraint
+                err.code?.includes("ER_DUP_ENTRY") || // MySQL
+                err.code?.includes("SQLITE_CONSTRAINT") // SQLite
             ) {
-                return { success: false, error: NetworkErrorType.DATABASE_ERROR };
+                return {
+                    success: false,
+                    error: {
+                        type: NetworkErrorType.DATABASE_ERROR,
+                        message: NetworkErrorType.DATABASE_ERROR,
+                        statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+                    }
+                };
             }
 
-            // Fallback for unexpected or unclassified errors
-            return { success: false, error: NetworkErrorType.UNEXPECTED_ERROR };
+            return {
+                success: false,
+                error: {
+                    type: NetworkErrorType.UNEXPECTED_ERROR,
+                    message: NetworkErrorType.UNEXPECTED_ERROR,
+                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR
+                }
+            };
+
         }
     }
 }
