@@ -1,50 +1,39 @@
-/**
- * @file PermissionErrorType.ts
- * @description
- * Defines permission-specific error types and the {@link PermissionError} class.
- * Used to standardize and type errors related to permission validation and mutation
- * within the domain layer.
- */
+import { HttpStatusCodes } from "../../../application/interfaces/HttpStatusCodes";
+import { DomainError, IDomainError } from "../../../application/interfaces/IDomainError";
 
 /**
- * Enumerates all possible error types related to {@link Permission} operations.
+ * Permission-specific error types.
  */
 export enum PermissionErrorType {
-    /** The permission action (e.g., READ, WRITE) cannot be empty. */
     EMPTY_ACTION = "Permission action cannot be empty.",
-
-    /** The resource name cannot be empty. */
     EMPTY_RESOURCE = "Permission resource cannot be empty.",
-
-    /** The action format is invalid (must be uppercase letters and underscores only). */
     INVALID_ACTION_FORMAT = "Invalid permission action format (must be uppercase letters and underscores).",
-
-    /** The resource format is invalid (must be uppercase letters and underscores only). */
     INVALID_RESOURCE_FORMAT = "Invalid permission resource format (must be uppercase letters and underscores).",
+    DUPLICATE_PERMISSION = "Permission already exists.",
+    PERMISSION_NOT_FOUND = "Permission not found.",
+    DATABASE_ERROR = "Database error occurred while handling permissions.",
+    UNEXPECTED_ERROR = "An unexpected error occurred while processing permission logic."
 }
 
 /**
- * Custom domain error for permission-related operations.
- *
- * @example
- * ```typescript
- * throw new PermissionError(PermissionErrorType.EMPTY_RESOURCE);
- * ```
+ * Map each PermissionErrorType to an HTTP status code.
  */
-export class PermissionError extends Error {
-    /** The specific type of permission error that occurred. */
-    public readonly type: PermissionErrorType;
+export const PermissionErrorHttpStatus: Record<PermissionErrorType, number> = {
+    [PermissionErrorType.EMPTY_ACTION]: HttpStatusCodes.BAD_REQUEST,
+    [PermissionErrorType.EMPTY_RESOURCE]: HttpStatusCodes.BAD_REQUEST,
+    [PermissionErrorType.INVALID_ACTION_FORMAT]: HttpStatusCodes.BAD_REQUEST,
+    [PermissionErrorType.INVALID_RESOURCE_FORMAT]: HttpStatusCodes.BAD_REQUEST,
+    [PermissionErrorType.DUPLICATE_PERMISSION]: HttpStatusCodes.CONFLICT,
+    [PermissionErrorType.PERMISSION_NOT_FOUND]: HttpStatusCodes.NOT_FOUND,
+    [PermissionErrorType.DATABASE_ERROR]: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+    [PermissionErrorType.UNEXPECTED_ERROR]: HttpStatusCodes.INTERNAL_SERVER_ERROR
+};
 
-    /**
-     * Creates a new instance of {@link PermissionError}.
-     * @param {PermissionErrorType} type - The specific error type.
-     */
+/**
+ * Permission-specific domain error class.
+ */
+export class PermissionError extends DomainError<PermissionErrorType> implements IDomainError<PermissionErrorType> {
     constructor(type: PermissionErrorType) {
-        super(type);
-        this.name = "PermissionError";
-        this.type = type;
-
-        // Ensure correct prototype chain for `instanceof` checks.
-        Object.setPrototypeOf(this, PermissionError.prototype);
+        super(type, PermissionErrorHttpStatus);
     }
 }
