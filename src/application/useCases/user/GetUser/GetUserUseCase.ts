@@ -5,6 +5,7 @@ import { IGetUserUseCase } from "./IGetUserUseCase";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
 import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 
 /**
  * @class GetUserCase
@@ -49,14 +50,7 @@ export class GetUserCase implements IGetUserUseCase {
             };
 
         } catch (err) {
-            return {
-                success: false,
-                error: {
-                    type: UserErrorType.UNEXPECTED_ERROR,
-                    message: UserErrorType.UNEXPECTED_ERROR,
-                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
-                }
-            };
+            return useCaseErrorHandler(err);
         }
     }
 }

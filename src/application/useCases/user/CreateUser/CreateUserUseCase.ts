@@ -1,9 +1,11 @@
-import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO"
-import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType"
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes"
-import { IPasswordHasher } from "../../../providers/IPasswordHasher"
-import { IUsersRepository } from "../../../repositories/IUsersRepository"
-import { ICreateUserUseCase } from "./ICreateUserUseCase"
+import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO";
+import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
+import { IPasswordHasher } from "../../../providers/IPasswordHasher";
+import { IUsersRepository } from "../../../repositories/IUsersRepository";
+import { ICreateUserUseCase } from "./ICreateUserUseCase";
+import { DomainError } from "../../../interfaces/IDomainError";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 
 /**
  * Use case responsible for creating a new user.
@@ -31,7 +33,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
      *
      * @async
      * @param {ICreateUserDTO} data - The user data for creation (email, name, password, etc.).
-     * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>} 
+     * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>}
      * Returns an object with:
      * - `data`: The created user or an error object.
      * - `success`: Indicates whether the operation succeeded.
@@ -47,20 +49,19 @@ export class CreateUserUseCase implements ICreateUserUseCase {
      * if (result.success) {
      *   console.log("User created:", result.data);
      * } else {
-     *   console.error("Error:", result.data.error);
-     * }²
+     *   console.error("Error:", result.error);
+     * }
      */
     async execute({ email, last_name, first_name, password }: ICreateUserDTO) {
         try {
             const userAlreadyExists = await this.userRepository.findByEmail(email)
-            
+
             if (userAlreadyExists) {
                 throw new UserError(UserErrorType.EMAIL_ALREADY_USED)
             }
 
             const passwordHashed = await this.passwordHasher.hashPassword(password)
             if (!passwordHashed) {
-
                 throw new UserError(UserErrorType.PASSWORD_HASHING_FAILED)
             }
 
@@ -74,32 +75,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
             return { success: true, data: user }
 
         } catch (err: any) {
-
-            if (
-                err.code === "P2002" ||       // Prisma unique constraint
-                err.code === "23505" ||       // PostgreSQL unique constraint
-                err.code?.includes("ER_DUP_ENTRY") || // MySQL
-                err.code?.includes("SQLITE_CONSTRAINT") // SQLite
-            ) {
-                return {
-                    success: false,
-                    error: {
-                        type: UserErrorType.EMAIL_ALREADY_USED,
-                        message: UserErrorType.EMAIL_ALREADY_USED, // obligatoire
-                        statusCode: HttpStatusCodes.CONFLICT,     // 409
-                    }
-                };
-            }
-
-            return {
-                success: false,
-                error: {
-                    type: UserErrorType.UNEXPECTED_ERROR,
-                    message: UserErrorType.UNEXPECTED_ERROR,    // obligatoire
-                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR, // 500
-                }
-            };
+            return useCaseErrorHandler(err);
         }
-
     }
 }

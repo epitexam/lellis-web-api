@@ -1,6 +1,7 @@
 import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { IPasswordHasher } from "../../../providers/IPasswordHasher";
@@ -73,31 +74,7 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
 
             return { success: true, data: updatedUser };
         } catch (err: any) {
-
-            if (
-                err.code === "P2002" ||       // Prisma unique constraint
-                err.code === "23505" ||       // PostgreSQL unique constraint
-                err.code?.includes("ER_DUP_ENTRY") || // MySQL
-                err.code?.includes("SQLITE_CONSTRAINT") // SQLite
-            ) {
-                return {
-                    success: false,
-                    error: {
-                        type: UserErrorType.EMAIL_ALREADY_USED,
-                        message: UserErrorType.EMAIL_ALREADY_USED, // obligatoire
-                        statusCode: HttpStatusCodes.CONFLICT,     // 409
-                    }
-                };
-            }
-
-            return {
-                success: false,
-                error: {
-                    type: UserErrorType.UNEXPECTED_ERROR,
-                    message: UserErrorType.UNEXPECTED_ERROR,    // obligatoire
-                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR, // 500
-                }
-            };
+            return useCaseErrorHandler(err);
         }
     }
 }
