@@ -11,7 +11,7 @@ export class GetUserController implements IController<IGetUserDto, IUserOutputRe
         const result = await this.getUserUseCase.execute({ uuid: request.uuid })
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to fetch user info.");
+            throw result.error;
         }
 
         return result.data

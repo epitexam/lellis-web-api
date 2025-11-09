@@ -2,6 +2,8 @@ import { ICreateNetworkDTO } from "../../../../domain/network/dtos/ICreateNetwor
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
 import { Network } from "../../../../domain/network/entities/Network";
 import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
@@ -53,35 +55,23 @@ export class CreateNetworkUseCase implements ICreateNetworkUseCase {
         try {
 
             if (!data.name) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.EMPTY_NAME,
-                };
+                throw new NetworkError(NetworkErrorType.EMPTY_NAME)
             }
 
             if (!data.adminId) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.MISSING_ADMIN,
-                };
+                throw new NetworkError(NetworkErrorType.MISSING_ADMIN)
             }
 
             const admin = await this.userRepository.findById(data.adminId);
 
             if (!admin) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.ADMIN_NOT_FOUND,
-                };
+                throw new NetworkError(NetworkErrorType.ADMIN_NOT_FOUND)
             }
 
             const existingNetwork = await this.networkRepository.findNetworkByName(data.name);
 
             if (existingNetwork) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.DUPLICATE_NETWORK_NAME,
-                };
+                throw new NetworkError(NetworkErrorType.DUPLICATE_NETWORK_NAME)
             }
 
             const network = new Network(Bun.randomUUIDv7(), data.name, admin.uuid);
@@ -94,18 +84,9 @@ export class CreateNetworkUseCase implements ICreateNetworkUseCase {
                 success: true,
                 data: dto,
             };
-        } catch (error: any) {
-            if (error instanceof NetworkError) {
-                return {
-                    success: false,
-                    error: error.type,
-                };
-            }
 
-            return {
-                success: false,
-                error: "UNEXPECTED_ERROR",
-            };
+        } catch (err: any) {
+            return useCaseErrorHandler(err);
         }
     }
 }

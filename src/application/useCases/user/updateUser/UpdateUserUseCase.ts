@@ -1,6 +1,8 @@
 import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
-import { UserErrorType } from "../../../../domain/user/enums/UserErrorType";
+import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { IPasswordHasher } from "../../../providers/IPasswordHasher";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
@@ -57,36 +59,22 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
      */
     async execute(userId: string, data: Partial<IUpdateUserRequestDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>> {
         try {
-            // Retrieve the existing user by ID, including sensitive data (like password hash)
             const existingUser = await this.userRepository.findUserWithSensitiveData(userId);
             if (!existingUser) {
-                return { success: false, error: UserErrorType.USER_NOT_FOUND };
+                throw new UserError(UserErrorType.USER_NOT_FOUND);
             }
 
             const updateData: Partial<IUpdateUserRequestDTO> = { ...data };
 
-            // If a new password is provided, hash it securely
             if (data.password) {
                 updateData.password = await this.passwordHasher.hashPassword(data.password);
             }
 
-            // Apply the update via repository
             const updatedUser = await this.userRepository.update(existingUser, updateData);
 
             return { success: true, data: updatedUser };
         } catch (err: any) {
-            // Handle known constraint or uniqueness errors
-            if (
-                err.code === "P2002" ||
-                err.code === "23505" ||
-                err.code?.includes("ER_DUP_ENTRY") ||
-                err.code?.includes("SQLITE_CONSTRAINT")
-            ) {
-                return { success: false, error: UserErrorType.EMAIL_ALREADY_USED };
-            }
-
-            // Fallback for unexpected errors
-            return { success: false, error: UserErrorType.UNEXPECTED_ERROR };
+            return useCaseErrorHandler(err);
         }
     }
 }

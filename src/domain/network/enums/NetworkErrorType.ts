@@ -1,93 +1,54 @@
-/**
- * @file NetworkErrorType.ts
- * @description
- * Defines network-specific error types and the {@link NetworkError} class.
- * Used to standardize and type errors related to network validation, creation,
- * and mutation within the domain layer.
- *
- * These errors are typically thrown or returned by use cases and entities
- * when business invariants are violated.
- */
+import { HttpStatusCodes } from "../../../application/interfaces/HttpStatusCodes";
+import { DomainError, IDomainError } from "../../../application/interfaces/IDomainError";
+
 
 /**
- * Enumerates all possible error types related to {@link Network} operations.
+ * Network-specific error types.
  */
 export enum NetworkErrorType {
-    /** The network name cannot be empty. */
     EMPTY_NAME = "Network name cannot be empty.",
-
-    /** The admin user cannot be null or undefined. */
     MISSING_ADMIN = "Network must have an admin user.",
-
-    /** The provided admin user does not exist in the system. */
     ADMIN_NOT_FOUND = "Admin user not found in the system.",
-
-    /** A network with this name already exists. */
     DUPLICATE_NETWORK_NAME = "A network with this name already exists.",
-
-    /** The user is not a member of this network. */
     USER_NOT_FOUND = "User is not a member of this network.",
-
-    /** The user is already a member of this network. */
     USER_ALREADY_IN_NETWORK = "User is already a member of this network.",
-
-    /** The admin cannot be removed from the network. */
     CANNOT_REMOVE_ADMIN = "The admin user cannot be removed from the network.",
-
-    /** The resource was not found in the network. */
     RESOURCE_NOT_FOUND = "Resource not found in the network.",
-
-    /** The network name is already used. (Alias for backward compatibility.) */
-    NAME_ALREADY_USED = "Name already used by a network.",
-
-    /** A database constraint or persistence error occurred. */
+    NAME_ALREADY_USED = "Name already used by another network.",
     DATABASE_ERROR = "A database error occurred while processing the network.",
-
-    /** An unexpected error occurred that does not match a known case. */
     UNEXPECTED_ERROR = "An unexpected error occurred while handling the network operation.",
-
-    /** An unexpected error occurred when no network id is provided. */
-    MISSING_NETWORK_ID = "no network id was provided.",
-
-    /** An unexpected error occurred when no network was found. */
+    MISSING_NETWORK_ID = "No network ID was provided.",
     NETWORK_NOT_FOUND = "Network not found.",
-
-    /** An unexpected error occurred when the network id provided is not a valid uuid. */
-    INVALID_NETWORK_ID = "Network id provided is not a valid uuid.",
-
-    /**
-     * Occurs when a user attempts to perform an action on a network where such an operation is not permitted due to insufficient permissions or access restrictions.
-     */
+    INVALID_NETWORK_ID = "Network ID provided is not a valid UUID.",
     NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK = "You are not allowed to perform this action on this network."
-
 }
 
 /**
- * Custom domain error for network-related operations.
- *
- * This class allows domain logic and use cases to throw rich,
- * type-safe errors without depending on external libraries.
- *
- * @example
- * ```typescript
- * throw new NetworkError(NetworkErrorType.USER_NOT_FOUND);
- * ```
+ * Map each NetworkErrorType to an HTTP status code.
  */
-export class NetworkError extends Error {
-    /** The specific type of network error that occurred. */
-    public readonly type: NetworkErrorType;
+export const NetworkErrorHttpStatus: Record<NetworkErrorType, number> = {
+    [NetworkErrorType.EMPTY_NAME]: HttpStatusCodes.BAD_REQUEST,
+    [NetworkErrorType.MISSING_ADMIN]: HttpStatusCodes.BAD_REQUEST,
+    [NetworkErrorType.ADMIN_NOT_FOUND]: HttpStatusCodes.NOT_FOUND,
+    [NetworkErrorType.DUPLICATE_NETWORK_NAME]: HttpStatusCodes.CONFLICT,
+    [NetworkErrorType.USER_NOT_FOUND]: HttpStatusCodes.NOT_FOUND,
+    [NetworkErrorType.USER_ALREADY_IN_NETWORK]: HttpStatusCodes.CONFLICT,
+    [NetworkErrorType.CANNOT_REMOVE_ADMIN]: HttpStatusCodes.FORBIDDEN,
+    [NetworkErrorType.RESOURCE_NOT_FOUND]: HttpStatusCodes.NOT_FOUND,
+    [NetworkErrorType.NAME_ALREADY_USED]: HttpStatusCodes.CONFLICT,
+    [NetworkErrorType.DATABASE_ERROR]: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+    [NetworkErrorType.UNEXPECTED_ERROR]: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+    [NetworkErrorType.MISSING_NETWORK_ID]: HttpStatusCodes.BAD_REQUEST,
+    [NetworkErrorType.NETWORK_NOT_FOUND]: HttpStatusCodes.NOT_FOUND,
+    [NetworkErrorType.INVALID_NETWORK_ID]: HttpStatusCodes.BAD_REQUEST,
+    [NetworkErrorType.NOT_ALLOWED_TO_PERFORM_ACTION_IN_NETWORK]: HttpStatusCodes.FORBIDDEN
+};
 
-    /**
-     * Creates a new instance of {@link NetworkError}.
-     * 
-     * @param {NetworkErrorType} type - The specific error type.
-     */
+/**
+ * Network-specific domain error class.
+ */
+export class NetworkError extends DomainError<NetworkErrorType> implements IDomainError<NetworkErrorType> {
     constructor(type: NetworkErrorType) {
-        super(type);
-        this.name = "NetworkError";
-        this.type = type;
-
-        // Ensures correct prototype chain for `instanceof` checks.
-        Object.setPrototypeOf(this, NetworkError.prototype);
+        super(type, NetworkErrorHttpStatus);
     }
 }

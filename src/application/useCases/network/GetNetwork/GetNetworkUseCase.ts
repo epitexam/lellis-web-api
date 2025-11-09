@@ -1,6 +1,8 @@
 import { IGetNetworkDTO } from "../../../../domain/network/dtos/IGetNetworkDTO";
 import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
-import { NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { INetworkRepository } from "../../../repositories/INetworkRepository";
 import { IGetNetworkUseCase } from "./IGetNetworkUseCase";
@@ -59,19 +61,13 @@ export class GetNetworkUseCase implements IGetNetworkUseCase {
         try {
 
             if (!data.networkId || typeof data.networkId !== "string") {
-                return {
-                    success: false,
-                    error: NetworkErrorType.MISSING_NETWORK_ID,
-                };
+                throw new NetworkError(NetworkErrorType.NETWORK_NOT_FOUND)
             }
 
             const network = await this.networkRepository.findNetworkById(data.networkId);
 
             if (!network) {
-                return {
-                    success: false,
-                    error: NetworkErrorType.NETWORK_NOT_FOUND,
-                };
+                throw new NetworkError(NetworkErrorType.NETWORK_NOT_FOUND)
             }
 
             return {
@@ -79,18 +75,7 @@ export class GetNetworkUseCase implements IGetNetworkUseCase {
                 data: network,
             };
         } catch (err: any) {
-
-            if (
-                err.code === 'P2002' ||       // Prisma
-                err.code === '23505' ||       // PostgreSQL
-                err.code?.includes('ER_DUP_ENTRY') || // MySQL
-                err.code?.includes('SQLITE_CONSTRAINT') // SQLite
-            ) {
-                return { success: false, error: NetworkErrorType.DATABASE_ERROR };
-            }
-
-            // Unexpected errors
-            return { success: false, error: NetworkErrorType.UNEXPECTED_ERROR };
+            return useCaseErrorHandler(err);
         }
     }
 }

@@ -10,9 +10,9 @@ export class SearchUserController implements IController<ISearchUsersInputDTO, I
         const result = await this.searchUserUseCase.execute(request)
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to fetch user info.");
+            throw result.error;
         }
-
+        
         return result.data
     }
 }

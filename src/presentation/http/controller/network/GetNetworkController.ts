@@ -11,7 +11,7 @@ export class GetNetworkController implements IController<IGetNetworkDTO, INetwor
         const result = await this.getNetworkUseCase.execute(request)
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to fetch user informations.");
+            throw result.error;
         }
 
         return result.data

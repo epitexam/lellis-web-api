@@ -12,7 +12,7 @@ export class UpdateUserController implements IController<IUpdateUserRequestDTO, 
         const result = await this.updateUserUseCase.execute(user_id, updateData)
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to update user info.");
+            throw result.error;
         }
 
         return {

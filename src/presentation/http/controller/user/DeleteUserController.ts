@@ -11,7 +11,7 @@ export class DeleteUserController implements IController<IGetUserDto, Partial<IU
         const result = await this.deleteUserUseCase.execute(request.uuid)
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to fetch user info.");
+            throw result.error;
         }
 
         return {

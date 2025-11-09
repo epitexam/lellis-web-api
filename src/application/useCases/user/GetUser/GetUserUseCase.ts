@@ -2,8 +2,10 @@ import { IUserInputRequestDTO } from "../../../../domain/user/dtos/IUserInputReq
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { IGetUserUseCase } from "./IGetUserUseCase";
-import { UserErrorType } from "../../../../domain/user/enums/UserErrorType";
+import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 
 /**
  * @class GetUserCase
@@ -25,19 +27,13 @@ export class GetUserCase implements IGetUserUseCase {
     async execute(data: Partial<IUserInputRequestDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>> {
         try {
             if (!data.uuid) {
-                return {
-                    success: false,
-                    error: UserErrorType.MISSING_USER_UUID
-                };
+                throw new UserError(UserErrorType.MISSING_USER_UUID)
             }
 
             const user = await this.userRepository.findById(data.uuid);
 
             if (!user) {
-                return {
-                    success: false,
-                    error: UserErrorType.USER_NOT_FOUND
-                };
+                throw new UserError(UserErrorType.USER_NOT_FOUND)
             }
 
             const output: IUserOutputRequestDTO = {
@@ -54,10 +50,7 @@ export class GetUserCase implements IGetUserUseCase {
             };
 
         } catch (err) {
-            return {
-                success: false,
-                error: UserErrorType.UNEXPECTED_ERROR
-            };
+            return useCaseErrorHandler(err);
         }
     }
 }

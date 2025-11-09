@@ -9,9 +9,8 @@ export class SearchNetworkController implements IController<ISearchNetworkInputD
     async handle(request: ISearchNetworkInputDTO): Promise<INetworkOutputRequestDTO[]> {
         const result = await this.searchNetworkUseCase.execute(request)
 
-
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to fetch user info.");
+            throw result.error;
         }
 
         return result.data
