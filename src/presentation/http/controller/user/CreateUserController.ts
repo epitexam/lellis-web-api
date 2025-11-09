@@ -10,7 +10,7 @@ import { IController } from "../../interface/IController";
  * the application layer's CreateUserUseCase.
  */
 export class CreateUserController implements IController<ICreateUserDTO, IUserOutputRequestDTO> {
-  constructor(private readonly createUserCase: ICreateUserUseCase) {}
+  constructor(private readonly createUserCase: ICreateUserUseCase) { }
 
   async handle(request: ICreateUserDTO): Promise<IUserOutputRequestDTO> {
     const result = await this.createUserCase.execute({
@@ -21,7 +21,7 @@ export class CreateUserController implements IController<ICreateUserDTO, IUserOu
     });
 
     if (!result.success || !result.data) {
-      throw new Error(result.error ?? "Failed to create user");
+      throw result.error;
     }
 
     return {
