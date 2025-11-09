@@ -10,7 +10,7 @@ export class UpdateNetworkController implements IController<IUpdateNetworkReques
         const result = await this.updateNetworkUseCase.execute(request)
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to create new network.");
+            throw result.error;
         }
 
         return {

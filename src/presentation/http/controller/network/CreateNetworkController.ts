@@ -10,7 +10,7 @@ export class CreateNetworkController implements IController<ICreateNetworkDTO, P
         const result = await this.createNetworkUseCase.execute(request);
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to create new network.");
+            throw result.error;
         }
 
         return {

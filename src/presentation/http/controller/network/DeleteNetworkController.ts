@@ -11,7 +11,7 @@ export class DeleteNetworkController implements IController<IDeleteNetworkDTO, P
         const result = await this.deleteNetworkUseCase.execute(request)
 
         if (!result.success || !result.data) {
-            throw new Error(result.error ?? "Failed to delete network.");
+            throw result.error;
         }
 
         return {
