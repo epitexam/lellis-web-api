@@ -5,6 +5,7 @@ import { UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { ISearchUsersUseCase } from "./ISearchUserUseCase";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
 import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/ISearchUsersInputDTO";
+import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 
 /**
  * @class SearchUsersUseCase
@@ -32,7 +33,11 @@ export class SearchUsersUseCase implements ISearchUsersUseCase {
         } catch (err: any) {
             return {
                 success: false,
-                error: UserErrorType.UNEXPECTED_ERROR
+                error: {
+                    type: UserErrorType.UNEXPECTED_ERROR,
+                    message: UserErrorType.UNEXPECTED_ERROR,
+                    statusCode: HttpStatusCodes.INTERNAL_SERVER_ERROR,
+                }
             };
         }
     }
