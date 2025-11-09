@@ -4,8 +4,8 @@ import { IUpdateNetworkUseCase } from "../../../../application/useCases/network/
 import { UpdateNetworkUseCase } from "../../../../application/useCases/network/UpdateNetwork /UpdateNetworkUseCase";
 import { IUpdateNetworkRequestDTO } from "../../../../domain/network/dtos/IUpdateNetworkRequestDTO";
 import { UpdateNetworkController } from "../../../../presentation/http/controller/network/UpdateNetworkController";
-import { PrismaNetworkRepository } from "../../repositories/prisma/PrismaNetworkRepository";
-import { PrismaUserRepository } from "../../repositories/prisma/PrismaUserRepository";
+import { PrismaNetworkRepository } from "../../../user/repositories/prisma/PrismaNetworkRepository";
+import { PrismaUserRepository } from "../../../user/repositories/prisma/PrismaUserRepository";
 
 export function UpdateNetworkComposer() {
     const networkRepository: INetworkRepository = new PrismaNetworkRepository();

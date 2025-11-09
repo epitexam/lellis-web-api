@@ -2,7 +2,7 @@ import { INetworkRepository } from "../../../../application/repositories/INetwor
 import { DeleteNetworkUseCase } from "../../../../application/useCases/network/DeleteNetwork/DeleteNetworkUseCase";
 import { IDeleteNetworkUseCase } from "../../../../application/useCases/network/DeleteNetwork/IDeleteNetworkUseCase";
 import { DeleteNetworkController } from "../../../../presentation/http/controller/network/DeleteNetworkController";
-import { PrismaNetworkRepository } from "../../repositories/prisma/PrismaNetworkRepository";
+import { PrismaNetworkRepository } from "../../../user/repositories/prisma/PrismaNetworkRepository";
 
 export function DeleteNetworkComposer() {
     const repository: INetworkRepository = new PrismaNetworkRepository();

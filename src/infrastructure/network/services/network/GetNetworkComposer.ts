@@ -2,7 +2,7 @@ import { INetworkRepository } from "../../../../application/repositories/INetwor
 import { GetNetworkUseCase } from "../../../../application/useCases/network/GetNetwork/GetNetworkUseCase";
 import { IGetNetworkUseCase } from "../../../../application/useCases/network/GetNetwork/IGetNetworkUseCase";
 import { GetNetworkController } from "../../../../presentation/http/controller/network/GetNetworkController";
-import { PrismaNetworkRepository } from "../../repositories/prisma/PrismaNetworkRepository";
+import { PrismaNetworkRepository } from "../../../user/repositories/prisma/PrismaNetworkRepository";
 
 export function GetNetworkComposer() {
     const repository: INetworkRepository = new PrismaNetworkRepository();
