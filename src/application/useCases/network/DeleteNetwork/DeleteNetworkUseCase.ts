@@ -1,3 +1,10 @@
+import { IDeleteNetworkDTO } from "../../../../domain/network/dtos/IDeleteNetworkDto";
+import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
+import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
+import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
+import { INetworkRepository } from "../../../repositories/INetworkRepository";
+import { IDeleteNetworkUseCase } from "./IDeleteNetworkUseCase";
 /**
  * @file DeleteNetworkUseCase.ts
  * @description
@@ -32,14 +39,6 @@
  * }
  * ```
  */
-import { IDeleteNetworkDTO } from "../../../../domain/network/dtos/IDeleteNetworkDto";
-import { INetworkOutputRequestDTO } from "../../../../domain/network/dtos/INetworkOutputRequestDTO";
-import { NetworkError, NetworkErrorType } from "../../../../domain/network/enums/NetworkErrorType";
-import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
-import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
-import { INetworkRepository } from "../../../repositories/INetworkRepository";
-import { IDeleteNetworkUseCase } from "./IDeleteNetworkUseCase";
 
 export class DeleteNetworkUseCase implements IDeleteNetworkUseCase {
 
