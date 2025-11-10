@@ -1,5 +1,5 @@
 import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdateUserInputDTO";
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { IUpdateUserOutputDTO } from "../../../../domain/user/dtos/update/IUpdateUserOutputDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 
 /**
@@ -11,17 +11,17 @@ import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
  * decoupling business rules from infrastructure details (like database or API layers).
  *
  * Responsibilities:
- * - Accept a unique user identifier (`userId`) and partial update data.
+ * - Accept a unique user identifier (`userInfo.uuid`) and partial update data.
  * - Validate and delegate the update process to a repository or domain service.
- * - Return a standardized {@link IUseCaseResult} containing either the updated user data or an error.
+ * - Return a standardized {@link IUseCaseResult} containing either the updated user's UUID or an error.
  *
  * @example
  * ```typescript
- * const useCase: IUpdateUserUseCase = new UpdateUserUseCase(userRepository);
- * const result = await useCase.execute("uuid-user-123", { first_name: "Alice" });
+ * const useCase: IUpdateUserUseCase = new UpdateUserUseCase(userRepository, passwordHasher);
+ * const result = await useCase.execute({ uuid: "uuid-user-123" }, { first_name: "Alice" });
  *
  * if (result.success) {
- *   console.log("User updated:", result.data);
+ *   console.log("User updated, UUID:", result.data.user_id);
  * } else {
  *   console.error("Update failed:", result.error);
  * }
@@ -31,18 +31,15 @@ export interface IUpdateUserUseCase {
     /**
      * Executes the process of updating a user's information.
      *
-     * @async
-     * @param {string} userId
-     * The unique identifier (UUID) of the user to update.
      *
-     * @param {Partial<IUpdateUserInputDTO>} data
+     * @param {IUpdateUserInputDTO} data
      * The new data to apply to the user.
      * Only the provided fields will be updated.
      *
-     * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>}
+     * @returns {Promise<IUseCaseResult<IUpdateUserOutputDTO>>}
      * A promise resolving to a structured result containing either:
-     * - `data`: the updated user entity (on success)
+     * - `data`: an object with the updated user's UUID (on success)
      * - `error`: a description or enum value indicating the type of failure (on error)
      */
-    execute(userId: string, data: Partial<IUpdateUserInputDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>>;
+    execute(data: IUpdateUserInputDTO): Promise<IUseCaseResult<IUpdateUserOutputDTO>>;
 }

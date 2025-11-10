@@ -1,10 +1,8 @@
 import { ICreateUserDTO } from "../../../../domain/user/dtos/create/ICreateUserDTO";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IPasswordHasher } from "../../../providers/IPasswordHasher";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
 import { ICreateUserUseCase } from "./ICreateUserUseCase";
-import { DomainError } from "../../../interfaces/IDomainError";
 import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 
 /**
@@ -61,6 +59,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
             }
 
             const passwordHashed = await this.passwordHasher.hashPassword(password)
+            
             if (!passwordHashed) {
                 throw new UserError(UserErrorType.PASSWORD_HASHING_FAILED)
             }

@@ -1,3 +1,6 @@
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
+
 /**
  * @file IDeleteUserUseCase.ts
  * @description
@@ -9,9 +12,6 @@
  * It delegates persistence logic to the user repository abstraction
  * and returns a standardized result via {@link IUseCaseResult}.
  */
-
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
-import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 
 /**
  * @interface IDeleteUserUseCase

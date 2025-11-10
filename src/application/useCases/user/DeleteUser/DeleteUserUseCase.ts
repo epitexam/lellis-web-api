@@ -1,3 +1,10 @@
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
+import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
+import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
+import { IUsersRepository } from "../../../repositories/IUsersRepository";
+import { IDeleteUserUseCase } from "./IDeleteUserUseCase";
+
 /**
  * @file DeleteUserUseCase.ts
  * @description
@@ -8,14 +15,6 @@
  * - It communicates only with abstractions (repository interface).
  * - It returns a standardized {@link IUseCaseResult} for API or controller layers.
  */
-
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
-import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
-import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
-import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
-import { IUsersRepository } from "../../../repositories/IUsersRepository";
-import { IDeleteUserUseCase } from "./IDeleteUserUseCase";
 
 /**
  * @class DeleteUserUseCase

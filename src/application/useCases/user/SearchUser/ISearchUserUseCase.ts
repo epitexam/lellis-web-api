@@ -1,3 +1,7 @@
+import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
+import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
+
 // ISearchUsersUseCase.ts
 /**
  * @file ISearchUsersUseCase.ts
@@ -16,9 +20,6 @@
  * }
  * ```
  */
-import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
-import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
 
 export interface ISearchUsersUseCase {
     /**

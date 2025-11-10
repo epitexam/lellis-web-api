@@ -1,12 +1,10 @@
 
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
-import { UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { ISearchUsersUseCase } from "./ISearchUserUseCase";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
-import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
+import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
 
 /**
  * @class SearchUsersUseCase
@@ -23,14 +21,9 @@ export class SearchUsersUseCase implements ISearchUsersUseCase {
 
             return {
                 success: true,
-                data: users.map(user => ({
-                    uuid: user.uuid,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    created_at: user.created_at,
-                    updated_at: user.updated_at
-                }))
+                data: users
             };
+
         } catch (err: any) {
             return useCaseErrorHandler(err);
         }
