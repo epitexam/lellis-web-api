@@ -1,4 +1,4 @@
-import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO";
+import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdateUserInputDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
@@ -50,21 +50,21 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
      *
      * @async
      * @param {string} userId - The unique identifier (UUID) of the user to update.
-     * @param {Partial<IUpdateUserRequestDTO>} data - The fields to update.
+     * @param {Partial<IUpdateUserInputDTO>} data - The fields to update.
      *
      * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>}
      * A structured result object containing:
      * - `data`: the updated user information (on success)
      * - `error`: a {@link UserErrorType} describing the failure (on error)
      */
-    async execute(userId: string, data: Partial<IUpdateUserRequestDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>> {
+    async execute(userId: string, data: Partial<IUpdateUserInputDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>> {
         try {
             const existingUser = await this.userRepository.findUserWithSensitiveData(userId);
             if (!existingUser) {
                 throw new UserError(UserErrorType.USER_NOT_FOUND);
             }
 
-            const updateData: Partial<IUpdateUserRequestDTO> = { ...data };
+            const updateData: Partial<IUpdateUserInputDTO> = { ...data };
 
             if (data.password) {
                 updateData.password = await this.passwordHasher.hashPassword(data.password);

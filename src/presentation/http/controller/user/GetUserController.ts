@@ -1,5 +1,5 @@
 import { IGetUserUseCase } from "../../../../application/useCases/user/GetUser/IGetUserUseCase";
-import { IGetUserDto } from "../../../../domain/user/dtos/IGetUserDTO";
+import { IGetUserDto } from "../../../../domain/user/dtos/get/IGetUserDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IController } from "../../interface/IController";
 

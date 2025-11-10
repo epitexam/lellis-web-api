@@ -1,10 +1,10 @@
 import { PaginationResponseDTO } from "../../../../presentation/dtos/PaginationResponseDTO"
 import { IUsersRepository } from "../../../../application/repositories/IUsersRepository"
-import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO"
-import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO"
+import { ICreateUserDTO } from "../../../../domain/user/dtos/create/ICreateUserDTO"
+import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdateUserInputDTO"
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO"
 import { IUserFullDTO } from "../../../../domain/user/dtos/IUserFullDTO"
-import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/ISearchUsersInputDTO"
+import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO"
 
 /**
  * Prisma-based implementation of the {@link IUsersRepository}.
@@ -77,10 +77,10 @@ export class PrismaUserRepository implements IUsersRepository {
    *
    * @async
    * @param {IUserOutputRequestDTO} user - The existing user to update.
-   * @param {IUpdateUserRequestDTO} data - The new user data.
+   * @param {IUpdateUserInputDTO} data - The new user data.
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
-  async update(user: IUserOutputRequestDTO, data: IUpdateUserRequestDTO): Promise<IUserOutputRequestDTO> {
+  async update(user: IUserOutputRequestDTO, data: IUpdateUserInputDTO): Promise<IUserOutputRequestDTO> {
     throw new Error("Method not implemented yet")
   }
 

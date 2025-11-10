@@ -1,6 +1,6 @@
-import { ICreateUserDTO } from "../../domain/user/dtos/ICreateUserDTO"
-import { ISearchUsersInputDTO } from "../../domain/user/dtos/ISearchUsersInputDTO"
-import { IUpdateUserRequestDTO } from "../../domain/user/dtos/IUpdateUserRequestDTO"
+import { ICreateUserDTO } from "../../domain/user/dtos/create/ICreateUserDTO"
+import { ISearchUsersInputDTO } from "../../domain/user/dtos/search/ISearchUsersInputDTO"
+import { IUpdateUserInputDTO } from "../../domain/user/dtos/update/IUpdateUserInputDTO"
 import { IUserFullDTO } from "../../domain/user/dtos/IUserFullDTO"
 import { IUserOutputRequestDTO } from "../../domain/user/dtos/IUserOutputRequestDTO"
 import { PaginationResponseDTO } from "../../presentation/dtos/PaginationResponseDTO"
@@ -67,10 +67,10 @@ export interface IUsersRepository {
    *
    * @async
    * @param {IUserOutputRequestDTO} user - The existing user object.
-   * @param {IUpdateUserRequestDTO} data - The data to update the user with.
+   * @param {IUpdateUserInputDTO} data - The data to update the user with.
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
-  update(user: Partial<IUserOutputRequestDTO>, data: Partial<IUpdateUserRequestDTO>): Promise<IUserOutputRequestDTO>
+  update(user: Partial<IUserOutputRequestDTO>, data: Partial<IUpdateUserInputDTO>): Promise<IUserOutputRequestDTO>
 
 
   /**

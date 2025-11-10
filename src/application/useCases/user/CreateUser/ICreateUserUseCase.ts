@@ -1,4 +1,4 @@
-import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO";
+import { ICreateUserDTO } from "../../../../domain/user/dtos/create/ICreateUserDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 

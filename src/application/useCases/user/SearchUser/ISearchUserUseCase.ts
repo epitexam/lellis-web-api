@@ -18,7 +18,7 @@
  */
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
-import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/ISearchUsersInputDTO";
+import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
 
 export interface ISearchUsersUseCase {
     /**

@@ -3,7 +3,7 @@
  *
  * Contains user fields that can be updated.
  */
-export interface IUpdateUserRequestDTO {
+export interface IUpdateUserInputDTO {
 
     /** The user's unique uuid. */
     user_id: string;

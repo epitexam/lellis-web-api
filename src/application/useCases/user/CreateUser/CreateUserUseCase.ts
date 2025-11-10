@@ -1,4 +1,4 @@
-import { ICreateUserDTO } from "../../../../domain/user/dtos/ICreateUserDTO";
+import { ICreateUserDTO } from "../../../../domain/user/dtos/create/ICreateUserDTO";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { IPasswordHasher } from "../../../providers/IPasswordHasher";

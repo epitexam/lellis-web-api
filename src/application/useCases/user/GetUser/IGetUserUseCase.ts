@@ -1,4 +1,4 @@
-import { IGetUserDto } from "../../../../domain/user/dtos/IGetUserDTO";
+import { IGetUserDto } from "../../../../domain/user/dtos/get/IGetUserDTO";
 import { IUserInputRequestDTO } from "../../../../domain/user/dtos/IUserInputRequestDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";

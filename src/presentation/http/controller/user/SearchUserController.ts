@@ -1,5 +1,5 @@
 import { ISearchUsersUseCase } from "../../../../application/useCases/user/SearchUser/ISearchUserUseCase";
-import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/ISearchUsersInputDTO";
+import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IController } from "../../interface/IController";
 

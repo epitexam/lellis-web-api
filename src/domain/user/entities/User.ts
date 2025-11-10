@@ -1,4 +1,4 @@
-import { ICreateUserDTO } from "../dtos/ICreateUserDTO";
+import { ICreateUserDTO } from "../dtos/create/ICreateUserDTO";
 import { Email } from "../valueObjects/Email";
 import { Password } from "../valueObjects/Password";
 import { UserError, UserErrorType } from "../enums/UserErrorType";

@@ -1,4 +1,4 @@
-import { IUpdateUserRequestDTO } from "../../../../domain/user/dtos/IUpdateUserRequestDTO";
+import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdateUserInputDTO";
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 
@@ -35,7 +35,7 @@ export interface IUpdateUserUseCase {
      * @param {string} userId
      * The unique identifier (UUID) of the user to update.
      *
-     * @param {Partial<IUpdateUserRequestDTO>} data
+     * @param {Partial<IUpdateUserInputDTO>} data
      * The new data to apply to the user.
      * Only the provided fields will be updated.
      *
@@ -44,5 +44,5 @@ export interface IUpdateUserUseCase {
      * - `data`: the updated user entity (on success)
      * - `error`: a description or enum value indicating the type of failure (on error)
      */
-    execute(userId: string, data: Partial<IUpdateUserRequestDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>>;
+    execute(userId: string, data: Partial<IUpdateUserInputDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>>;
 }

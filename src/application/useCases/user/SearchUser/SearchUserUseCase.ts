@@ -4,7 +4,7 @@ import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { ISearchUsersUseCase } from "./ISearchUserUseCase";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
-import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/ISearchUsersInputDTO";
+import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO";
 import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 
