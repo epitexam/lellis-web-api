@@ -5,6 +5,7 @@ import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdate
 import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO"
 import { IUserFullDTO } from "../../../../domain/user/dtos/IUserFullDTO"
 import { ISearchUsersInputDTO } from "../../../../domain/user/dtos/search/ISearchUsersInputDTO"
+import { IUpdateUserOutputDTO } from "../../../../domain/user/dtos/update/IUpdateUserOutputDTO"
 
 /**
  * Prisma-based implementation of the {@link IUsersRepository}.
@@ -76,14 +77,13 @@ export class PrismaUserRepository implements IUsersRepository {
    * Updates an existing user.
    *
    * @async
-   * @param {IUserOutputRequestDTO} user - The existing user to update.
    * @param {IUpdateUserInputDTO} data - The new user data.
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
-  async update(user: IUserOutputRequestDTO, data: IUpdateUserInputDTO): Promise<IUserOutputRequestDTO> {
-    throw new Error("Method not implemented yet")
+  update(data: IUpdateUserInputDTO): Promise<IUpdateUserOutputDTO> {
+    throw new Error("Method not umplemented.")
   }
-
+  
   async searchUsers(criteria: ISearchUsersInputDTO): Promise<IUserOutputRequestDTO[]> {
     throw new Error("Method not umplemented.")
   }
