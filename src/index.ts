@@ -21,6 +21,7 @@ app.onError(({ error, set }) => {
   if (isDomainError(error)) {
     set.status = error.statusCode;
     return {
+      type: error.type,
       message: error.message,
     };
   }
@@ -28,12 +29,14 @@ app.onError(({ error, set }) => {
   if (error instanceof Error) {
     set.status = HttpStatusCodes.INTERNAL_SERVER_ERROR;
     return {
+      type: HttpStatusCodes.INTERNAL_SERVER_ERROR,
       message: error.message,
     };
   }
 
   set.status = HttpStatusCodes.INTERNAL_SERVER_ERROR;
   return {
+    type: HttpStatusCodes.INTERNAL_SERVER_ERROR,
     message: "An unexpected error occurred",
   };
 });
