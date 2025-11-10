@@ -9,14 +9,14 @@ export interface IUpdateUserInputDTO {
     user_id: string;
 
     /** The user's new first name. */
-    first_name: string;
+    first_name?: string;
 
     /** The user's new last name. */
-    last_name: string;
+    last_name?: string;
 
     /** The user's new email address. */
-    email: string;
+    email?: string;
 
     /** The user's new raw password (to be hashed before storing). */
-    password: string;
+    password?: string;
 }
