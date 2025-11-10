@@ -4,6 +4,8 @@ import { IUpdateUserInputDTO } from "../../domain/user/dtos/update/IUpdateUserIn
 import { IUserFullDTO } from "../../domain/user/dtos/IUserFullDTO"
 import { IUserOutputRequestDTO } from "../../domain/user/dtos/IUserOutputRequestDTO"
 import { PaginationResponseDTO } from "../../presentation/dtos/PaginationResponseDTO"
+import { IUpdateUserOutputDTO } from "../../domain/user/dtos/update/IUpdateUserOutputDTO"
+import { IUserUuidDTO } from "../../domain/user/dtos/IUserUuidDTO"
 
 /**
  * Defines the contract for a User Repository.
@@ -70,8 +72,7 @@ export interface IUsersRepository {
    * @param {IUpdateUserInputDTO} data - The data to update the user with.
    * @returns {Promise<IUserOutputRequestDTO>} The updated user.
    */
-  update(user: Partial<IUserOutputRequestDTO>, data: Partial<IUpdateUserInputDTO>): Promise<IUserOutputRequestDTO>
-
+  update(user: IUserUuidDTO, data: IUpdateUserInputDTO): Promise<IUpdateUserOutputDTO>
 
   /**
    * Searches for users based on optional filters such as first name, last name, or email.
