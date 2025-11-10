@@ -1,12 +1,11 @@
 import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdateUserInputDTO";
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
+import { IUpdateUserOutputDTO } from "../../../../domain/user/dtos/update/IUpdateUserOutputDTO";
+import { IUsersRepository } from "../../../repositories/IUsersRepository";
+import { IPasswordHasher } from "../../../providers/IPasswordHasher";
+import { IUpdateUserUseCase } from "./IUpdateUserUseCase";
+import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
-import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
-import { IPasswordHasher } from "../../../providers/IPasswordHasher";
-import { IUsersRepository } from "../../../repositories/IUsersRepository";
-import { IUpdateUserUseCase } from "./IUpdateUserUseCase";
 
 /**
  * @file UpdateUserUseCase.ts
@@ -17,29 +16,11 @@ import { IUpdateUserUseCase } from "./IUpdateUserUseCase";
  * - Retrieving the existing user (including sensitive fields),
  * - Hashing a new password if provided,
  * - Applying updates to the user,
- * - Returning a sanitized output DTO.
+ * - Returning only the user's UUID in the response.
  *
  * Sensitive data (like password hashes) are never exposed outside the application layer.
- *
- * @example
- * ```typescript
- * const useCase = new UpdateUserUseCase(userRepository, passwordHasher);
- * const result = await useCase.execute("uuid-user-123", { first_name: "Alice" });
- *
- * if (result.success) {
- *   console.log("User updated:", result.data);
- * } else {
- *   console.error("Update failed:", result.error);
- * }
- * ```
  */
 export class UpdateUserUseCase implements IUpdateUserUseCase {
-    /**
-     * Constructs a new {@link UpdateUserUseCase} instance.
-     *
-     * @param {IUsersRepository} userRepository - Repository responsible for user data persistence.
-     * @param {IPasswordHasher} passwordHasher - Service for securely hashing passwords.
-     */
     constructor(
         private readonly userRepository: IUsersRepository,
         private readonly passwordHasher: IPasswordHasher
@@ -48,31 +29,37 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
     /**
      * Executes the user update operation.
      *
-     * @async
-     * @param {string} userId - The unique identifier (UUID) of the user to update.
-     * @param {Partial<IUpdateUserInputDTO>} data - The fields to update.
+     * @param {IUpdateUserInputDTO} data - The fields to update.
      *
-     * @returns {Promise<IUseCaseResult<IUserOutputRequestDTO>>}
-     * A structured result object containing:
-     * - `data`: the updated user information (on success)
-     * - `error`: a {@link UserErrorType} describing the failure (on error)
+     * @returns {Promise<IUseCaseResult<IUpdateUserOutputDTO>>}
+     * Returns a structured result containing either:
+     * - `data`: the updated user's UUID
+     * - `error`: a domain error in case of failure
      */
-    async execute(userId: string, data: Partial<IUpdateUserInputDTO>): Promise<IUseCaseResult<IUserOutputRequestDTO>> {
+    async execute(data: IUpdateUserInputDTO): Promise<IUseCaseResult<IUpdateUserOutputDTO>> {
         try {
-            const existingUser = await this.userRepository.findUserWithSensitiveData(userId);
+            const existingUser = await this.userRepository.findUserWithSensitiveData(data.user_id);
+
             if (!existingUser) {
                 throw new UserError(UserErrorType.USER_NOT_FOUND);
             }
 
-            const updateData: Partial<IUpdateUserInputDTO> = { ...data };
+            const updatedData = { ...data };
 
             if (data.password) {
-                updateData.password = await this.passwordHasher.hashPassword(data.password);
+                const hashedPassword = await this.passwordHasher.hashPassword(data.password);
+                if (!hashedPassword) {
+                    throw new UserError(UserErrorType.PASSWORD_HASHING_FAILED);
+                }
+                updatedData.password = hashedPassword;
             }
 
-            const updatedUser = await this.userRepository.update(existingUser, updateData);
+            await this.userRepository.update(updatedData);
 
-            return { success: true, data: updatedUser };
+            return {
+                success: true,
+                data: { user_id: data.user_id }
+            };
         } catch (err: any) {
             return useCaseErrorHandler(err);
         }
