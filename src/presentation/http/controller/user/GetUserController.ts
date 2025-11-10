@@ -8,7 +8,7 @@ export class GetUserController implements IController<IGetUserDto, IUserOutputRe
 
     async handle(request: IGetUserDto): Promise<IUserOutputRequestDTO> {
 
-        const result = await this.getUserUseCase.execute({ uuid: request.uuid })
+        const result = await this.getUserUseCase.execute({ ...request })
 
         if (!result.success || !result.data) {
             throw result.error;
