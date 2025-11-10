@@ -14,8 +14,6 @@ export class DeleteUserController implements IController<IGetUserDto, Partial<IU
             throw result.error;
         }
 
-        return {
-            uuid: result.data.uuid
-        }
+        return result.data
     }
 }

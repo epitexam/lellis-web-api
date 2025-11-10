@@ -1,22 +1,19 @@
 import { IUpdateUserUseCase } from "../../../../application/useCases/user/updateUser/IUpdateUserUseCase";
 import { IUpdateUserInputDTO } from "../../../../domain/user/dtos/update/IUpdateUserInputDTO";
-import { IUserOutputRequestDTO } from "../../../../domain/user/dtos/IUserOutputRequestDTO";
 import { IController } from "../../interface/IController";
+import { IUpdateUserOutputDTO } from "../../../../domain/user/dtos/update/IUpdateUserOutputDTO";
+import { getResponseSchemaValidator } from "elysia";
 
-export class UpdateUserController implements IController<IUpdateUserInputDTO, Partial<IUserOutputRequestDTO>> {
+export class UpdateUserController implements IController<IUpdateUserInputDTO, IUpdateUserOutputDTO> {
     constructor(private readonly updateUserUseCase: IUpdateUserUseCase) { }
 
-    async handle(request: IUpdateUserInputDTO): Promise<Partial<IUserOutputRequestDTO>> {
-        const { user_id, ...updateData } = request;
-
-        const result = await this.updateUserUseCase.execute(user_id, updateData)
+    async handle(request: IUpdateUserInputDTO): Promise<IUpdateUserOutputDTO> {
+        const result = await this.updateUserUseCase.execute(request)
 
         if (!result.success || !result.data) {
             throw result.error;
         }
 
-        return {
-            uuid: result.data.uuid,
-        };
+        return result.data
     }
 }
