@@ -4,7 +4,6 @@ import { IUseCaseResult } from "../../../interfaces/IUseCaseResult";
 import { IGetUserUseCase } from "./IGetUserUseCase";
 import { UserError, UserErrorType } from "../../../../domain/user/enums/UserErrorType";
 import { IUsersRepository } from "../../../repositories/IUsersRepository";
-import { HttpStatusCodes } from "../../../interfaces/HttpStatusCodes";
 import { useCaseErrorHandler } from "../../../error/useCaseErrorHandler";
 
 /**
@@ -36,17 +35,9 @@ export class GetUserCase implements IGetUserUseCase {
                 throw new UserError(UserErrorType.USER_NOT_FOUND)
             }
 
-            const output: IUserOutputRequestDTO = {
-                uuid: user.uuid,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                created_at: user.created_at,
-                updated_at: user.updated_at
-            };
-
             return {
                 success: true,
-                data: output
+                data: user
             };
 
         } catch (err) {
