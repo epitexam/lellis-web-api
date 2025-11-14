@@ -1,35 +1,38 @@
-# Étape 1: Build
+# Stage 1: Builder
 FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 
+# Copy package files and install dependencies
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
+# Copy source code and build
 COPY . .
 RUN bun run build
 
-# Étape 2: Production
+# Stage 2: Production
 FROM oven/bun:1-alpine AS production
 WORKDIR /app
 
-# Installation uniquement des dépendances de production
+# Install production dependencies only
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --production
 
-# Copie du binaire compilé
+# Copy compiled binary from builder stage
 COPY --from=builder /app/server .
 
-# Sécurité : utilisateur non-root
+# Security: Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
 USER nodejs
 
-# # Santé de l'application
-# HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-#   CMD bun run --eval "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(e=>process.exit(1))"
+# Health check (adapts to PORT environment variable)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD bun run --eval "fetch('http://localhost:${PORT:-3000}/health').then(r=>process.exit(r.ok?0:1)).catch(e=>process.exit(1))"
 
-# EXPOSE 3000
+# Expose port (uses PORT from env or defaults to 3000)
+EXPOSE ${PORT:-3000}
 
-# Utilisation du binaire compilé (beaucoup plus rapide)
+# Run the compiled binary
 CMD ["./server"]
