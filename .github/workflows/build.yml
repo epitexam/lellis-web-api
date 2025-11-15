@@ -1,4 +1,4 @@
-name: Dev Workflow
+name: Build & Test CI Pipeline
 
 on:
   push:
