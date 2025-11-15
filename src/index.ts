@@ -41,6 +41,12 @@ app.onError(({ error, set }) => {
   };
 });
 
+app.get('/health', () => ({
+  status: 'ok',
+  timestamp: new Date().toISOString(),
+  uptime: process.uptime()
+}))
+
 app.use(indexRoutes)
 app.use(userRoutes)
 app.listen(PORT);
