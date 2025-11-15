@@ -43,6 +43,7 @@ app.onError(({ error, set }) => {
 
 app.get('/health', () => ({
   status: 'ok',
+  message: "Everything OK",
   timestamp: new Date().toISOString(),
   uptime: process.uptime()
 }))
