@@ -1,5 +1,6 @@
-import { Permission } from "./Permission";
-import { RoleError, RoleErrorType } from "../enums/RoleErrorType";
+
+import { Permission } from "../../permission/valueObjects/Permission";
+import { RoleError, RoleErrorType } from "../../role/enums/RoleErrorType";
 
 /**
  * @file Role.ts

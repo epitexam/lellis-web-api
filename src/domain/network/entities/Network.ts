@@ -1,7 +1,7 @@
-import { Role } from "../valueObjects/Role";
-import { Permission } from "../valueObjects/Permission";
+import { Permission } from "../../permission/valueObjects/Permission";
 import { NetworkError, NetworkErrorType } from "../enums/NetworkErrorType";
-import { RoleError, RoleErrorType } from "../enums/RoleErrorType";
+import { RoleError, RoleErrorType } from "../../role/enums/RoleErrorType";
+import { Role } from "../../role/entities/Role";
 
 /**
  * @file Network.ts
